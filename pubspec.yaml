@@ -4,7 +4,7 @@ version: 0.0.2
 repository: https://github.com/saulrmzlpz/dynamic_stepper
 
 environment:
-  sdk: '>=3.0.5 <4.0.0'
+  sdk: ^3.5.3
   flutter: ">=1.17.0"
 
 dependencies:
