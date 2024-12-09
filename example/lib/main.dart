@@ -67,6 +67,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             });
           },
           steps: steps,
+          alwaysShowContent: false,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -86,7 +87,24 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             onPressed: () {
               steps.add(DynamicStep(
                 title: Text('Step ${steps.length + 1} title'),
-                content: Text('Content for Step ${steps.length + 1}'),
+                content:Column(
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Enter Text for Step ${steps.length}',
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Enter Text for Step ${steps.length}',
+                      ),
+                    ),
+                  ],
+                ),
+                isActive: true
               ));
               setState(() {});
             },

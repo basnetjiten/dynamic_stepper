@@ -92,7 +92,8 @@ class DynamicControlsDetails {
 /// See also:
 ///
 ///  * [WidgetBuilder], which is similar but only takes a [BuildContext].
-typedef ControlsWidgetBuilder = Widget Function(BuildContext context, DynamicControlsDetails details);
+typedef ControlsWidgetBuilder = Widget Function(
+    BuildContext context, DynamicControlsDetails details);
 
 const TextStyle _kStepStyle = TextStyle(
   fontSize: 12.0,
@@ -105,7 +106,8 @@ const Color _kCircleActiveDark = Colors.black87;
 const Color _kDisabledLight = Colors.black38;
 const Color _kDisabledDark = Colors.white38;
 const double _kStepSize = 24.0;
-const double _kTriangleHeight = _kStepSize * 0.866025; // Triangle height. sqrt(3.0) / 2.0
+const double _kTriangleHeight =
+    _kStepSize * 0.866025; // Triangle height. sqrt(3.0) / 2.0
 
 /// A material step used in [DynamicStepper]. The step can have a title and subtitle,
 /// an icon within its circle, some content and a state that governs its
@@ -183,19 +185,23 @@ class DynamicStepper extends StatefulWidget {
   /// new one.
   ///
   /// The [steps], [type], and [currentStep] arguments must not be null.
-  const DynamicStepper({
-    super.key,
-    required this.steps,
-    this.physics,
-    this.type = DynamicStepperType.vertical,
-    this.currentStep = 0,
-    this.onStepTapped,
-    this.onStepContinue,
-    this.onStepCancel,
-    this.controlsBuilder,
-    this.elevation,
-    this.margin,
-  }) : assert(0 <= currentStep && currentStep < steps.length);
+  const DynamicStepper(
+      {super.key,
+      required this.steps,
+      this.physics,
+      this.type = DynamicStepperType.vertical,
+      this.currentStep = 0,
+      this.onStepTapped,
+      this.onStepContinue,
+      this.onStepCancel,
+      this.controlsBuilder,
+      this.elevation,
+      this.margin,
+      this.alwaysShowContent = true})
+      : assert(0 <= currentStep && currentStep < steps.length);
+
+  /// Makes the content of Steppers always visible
+  final bool alwaysShowContent;
 
   /// The steps of the stepper whose titles, subtitles, icons always get shown.
   ///
@@ -298,7 +304,8 @@ class DynamicStepper extends StatefulWidget {
   State<DynamicStepper> createState() => _DynamicStepperState();
 }
 
-class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStateMixin {
+class _DynamicStepperState extends State<DynamicStepper>
+    with TickerProviderStateMixin {
   late List<GlobalKey> _keys;
   final Map<int, DynamicStepState> _oldStates = <int, DynamicStepState>{};
 
@@ -358,14 +365,17 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
   }
 
   Widget _buildCircleChild(int index, bool oldState) {
-    final DynamicStepState state = oldState ? _oldStates[index]! : widget.steps[index].state;
+    final DynamicStepState state =
+        oldState ? _oldStates[index]! : widget.steps[index].state;
     final bool isDarkActive = _isDark() && widget.steps[index].isActive;
     switch (state) {
       case DynamicStepState.indexed:
       case DynamicStepState.disabled:
         return Text(
           '${index + 1}',
-          style: isDarkActive ? _kStepStyle.copyWith(color: Colors.black87) : _kStepStyle,
+          style: isDarkActive
+              ? _kStepStyle.copyWith(color: Colors.black87)
+              : _kStepStyle,
         );
       case DynamicStepState.editing:
         return Icon(
@@ -387,9 +397,13 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
   Color _circleColor(int index) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     if (!_isDark()) {
-      return widget.steps[index].isActive ? colorScheme.primary : colorScheme.onSurface.withOpacity(0.38);
+      return widget.steps[index].isActive
+          ? colorScheme.primary
+          : colorScheme.onSurface.withOpacity(0.38);
     } else {
-      return widget.steps[index].isActive ? colorScheme.secondary : colorScheme.background;
+      return widget.steps[index].isActive
+          ? colorScheme.secondary
+          : colorScheme.background;
     }
   }
 
@@ -406,7 +420,8 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
           shape: BoxShape.circle,
         ),
         child: Center(
-          child: _buildCircleChild(index, oldState && widget.steps[index].state == DynamicStepState.error),
+          child: _buildCircleChild(index,
+              oldState && widget.steps[index].state == DynamicStepState.error),
         ),
       ),
     );
@@ -420,14 +435,19 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
       child: Center(
         child: SizedBox(
           width: _kStepSize,
-          height: _kTriangleHeight, // Height of 24dp-long-sided equilateral triangle.
+          height: _kTriangleHeight,
+          // Height of 24dp-long-sided equilateral triangle.
           child: CustomPaint(
             painter: _TrianglePainter(
               color: _isDark() ? _kErrorDark : _kErrorLight,
             ),
             child: Align(
-              alignment: const Alignment(0.0, 0.8), // 0.8 looks better than the geometrical 0.33.
-              child: _buildCircleChild(index, oldState && widget.steps[index].state != DynamicStepState.error),
+              alignment: const Alignment(0.0, 0.8),
+              // 0.8 looks better than the geometrical 0.33.
+              child: _buildCircleChild(
+                  index,
+                  oldState &&
+                      widget.steps[index].state != DynamicStepState.error),
             ),
           ),
         ),
@@ -443,7 +463,9 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
         firstCurve: const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
         secondCurve: const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
         sizeCurve: Curves.fastOutSlowIn,
-        crossFadeState: widget.steps[index].state == DynamicStepState.error ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        crossFadeState: widget.steps[index].state == DynamicStepState.error
+            ? CrossFadeState.showSecond
+            : CrossFadeState.showFirst,
         duration: kThemeAnimationDuration,
       );
     } else {
@@ -480,9 +502,11 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
 
     final ThemeData themeData = Theme.of(context);
     final ColorScheme colorScheme = themeData.colorScheme;
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
 
-    const OutlinedBorder buttonShape = RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2)));
+    const OutlinedBorder buttonShape = RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(2)));
     const EdgeInsets buttonPadding = EdgeInsets.symmetric(horizontal: 16.0);
 
     return Container(
@@ -497,14 +521,24 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
             TextButton(
               onPressed: widget.onStepContinue,
               style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                  return states.contains(MaterialState.disabled) ? null : (_isDark() ? colorScheme.onSurface : colorScheme.onPrimary);
+                foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                  return states.contains(MaterialState.disabled)
+                      ? null
+                      : (_isDark()
+                          ? colorScheme.onSurface
+                          : colorScheme.onPrimary);
                 }),
-                backgroundColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                  return _isDark() || states.contains(MaterialState.disabled) ? null : colorScheme.primary;
+                backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                  return _isDark() || states.contains(MaterialState.disabled)
+                      ? null
+                      : colorScheme.primary;
                 }),
-                padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(buttonPadding),
-                shape: const MaterialStatePropertyAll<OutlinedBorder>(buttonShape),
+                padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                    buttonPadding),
+                shape:
+                    const MaterialStatePropertyAll<OutlinedBorder>(buttonShape),
               ),
               child: Text(localizations.continueButtonLabel),
             ),
@@ -666,30 +700,37 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
             ),
           ),
         ),
+        widget.alwaysShowContent? _secondChild(index):
         AnimatedCrossFade(
           firstChild: Container(height: 0.0),
-          secondChild: Container(
-            margin: widget.margin ??
-                const EdgeInsetsDirectional.only(
-                  start: 60.0,
-                  end: 24.0,
-                  bottom: 24.0,
-                ),
-            child: Column(
-              children: <Widget>[
-                widget.steps[index].content,
-                _buildVerticalControls(index),
-              ],
-            ),
-          ),
+          secondChild: _secondChild(index),
           firstCurve: const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
           secondCurve: const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
           sizeCurve: Curves.fastOutSlowIn,
-          crossFadeState: _isCurrent(index) ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: _isCurrent(index)
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           duration: kThemeAnimationDuration,
         ),
       ],
     );
+  }
+
+  Container _secondChild(int index) {
+    return Container(
+          margin: widget.margin ??
+              const EdgeInsetsDirectional.only(
+                start: 60.0,
+                end: 24.0,
+                bottom: 24.0,
+              ),
+          child: Column(
+            children: <Widget>[
+              widget.steps[index].content,
+              _buildVerticalControls(index),
+            ],
+          ),
+        );
   }
 
   Widget _buildVertical() {
@@ -716,7 +757,8 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
                       widget.onStepTapped?.call(i);
                     }
                   : null,
-              canRequestFocus: widget.steps[i].state != DynamicStepState.disabled,
+              canRequestFocus:
+                  widget.steps[i].state != DynamicStepState.disabled,
               child: _buildVerticalHeader(i),
             ),
             _buildVerticalBody(i),
@@ -804,7 +846,9 @@ class _DynamicStepperState extends State<DynamicStepper> with TickerProviderStat
               AnimatedSize(
                 curve: Curves.fastOutSlowIn,
                 duration: kThemeAnimationDuration,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: stepPanels),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: stepPanels),
               ),
               _buildVerticalControls(widget.currentStep),
             ],
