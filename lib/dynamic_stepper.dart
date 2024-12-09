@@ -31,6 +31,10 @@ enum DynamicStepState {
   /// A step that is currently having an error. e.g. the user has submitted wrong
   /// input.
   error,
+
+  /// A step that is currently having an error. e.g. the user has submitted wrong
+  /// input.
+  action,
 }
 
 /// Defines the [DynamicStepper]'s main axis.
@@ -122,17 +126,19 @@ class DynamicStep {
   /// Creates a step for a [DynamicStepper].
   ///
   /// The [title], [content], and [state] arguments must not be null.
-  const DynamicStep({
-    this.title,
-    this.subtitle,
-    required this.content,
-    this.state = DynamicStepState.indexed,
-    this.isActive = false,
-    this.label,
-  });
+  const DynamicStep(
+      {this.title,
+      this.subtitle,
+      required this.content,
+      this.state = DynamicStepState.indexed,
+      this.isActive = false,
+      this.label,
+      this.actionIcon});
 
   /// The title of the step that typically describes it.
   final Widget? title;
+
+  final Widget? actionIcon;
 
   /// The subtitle of the step that appears below the title and has a smaller
   /// font size. It typically gives more details that complement the title.
@@ -197,8 +203,12 @@ class DynamicStepper extends StatefulWidget {
       this.controlsBuilder,
       this.elevation,
       this.margin,
-      this.alwaysShowContent = true})
+      this.alwaysShowContent = true,
+      this.actionIcon})
       : assert(0 <= currentStep && currentStep < steps.length);
+
+  /// Icon to use for stepper circle. usually an action icon
+  final Widget? actionIcon;
 
   /// Makes the content of Steppers always visible
   final bool alwaysShowContent;
@@ -391,6 +401,12 @@ class _DynamicStepperState extends State<DynamicStepper>
         );
       case DynamicStepState.error:
         return const Text('!', style: _kStepStyle);
+      case DynamicStepState.action:
+        return widget.actionIcon ?? Icon(
+          Icons.add,
+          color: isDarkActive ? _kCircleActiveDark : _kCircleActiveLight,
+          size: 18.0,
+        );
     }
   }
 
@@ -403,7 +419,7 @@ class _DynamicStepperState extends State<DynamicStepper>
     } else {
       return widget.steps[index].isActive
           ? colorScheme.secondary
-          : colorScheme.background;
+          : colorScheme.surface;
     }
   }
 
@@ -565,6 +581,7 @@ class _DynamicStepperState extends State<DynamicStepper>
     final TextTheme textTheme = themeData.textTheme;
 
     switch (widget.steps[index].state) {
+      case DynamicStepState.action:
       case DynamicStepState.indexed:
       case DynamicStepState.editing:
       case DynamicStepState.complete:
@@ -585,6 +602,7 @@ class _DynamicStepperState extends State<DynamicStepper>
     final TextTheme textTheme = themeData.textTheme;
 
     switch (widget.steps[index].state) {
+      case DynamicStepState.action:
       case DynamicStepState.indexed:
       case DynamicStepState.editing:
       case DynamicStepState.complete:
@@ -605,6 +623,7 @@ class _DynamicStepperState extends State<DynamicStepper>
     final TextTheme textTheme = themeData.textTheme;
 
     switch (widget.steps[index].state) {
+      case DynamicStepState.action:
       case DynamicStepState.indexed:
       case DynamicStepState.editing:
       case DynamicStepState.complete:

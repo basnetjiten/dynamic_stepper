@@ -79,6 +79,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           FloatingActionButton(
             onPressed: () {
               steps.add(DynamicStep(
+                state: DynamicStepState.action,
                   content: DecoratedBox(
                     decoration: BoxDecoration(
                         borderRadius:
