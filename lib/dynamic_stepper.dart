@@ -123,7 +123,7 @@ class DynamicStep {
   ///
   /// The [title], [content], and [state] arguments must not be null.
   const DynamicStep({
-    required this.title,
+    this.title,
     this.subtitle,
     required this.content,
     this.state = DynamicStepState.indexed,
@@ -132,7 +132,7 @@ class DynamicStep {
   });
 
   /// The title of the step that typically describes it.
-  final Widget title;
+  final Widget? title;
 
   /// The subtitle of the step that appears below the title and has a smaller
   /// font size. It typically gives more details that complement the title.
@@ -521,24 +521,24 @@ class _DynamicStepperState extends State<DynamicStepper>
             TextButton(
               onPressed: widget.onStepContinue,
               style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                  return states.contains(MaterialState.disabled)
+                foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+                    (Set<WidgetState> states) {
+                  return states.contains(WidgetState.disabled)
                       ? null
                       : (_isDark()
                           ? colorScheme.onSurface
                           : colorScheme.onPrimary);
                 }),
-                backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                  return _isDark() || states.contains(MaterialState.disabled)
+                backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                    (Set<WidgetState> states) {
+                  return _isDark() || states.contains(WidgetState.disabled)
                       ? null
                       : colorScheme.primary;
                 }),
-                padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(
                     buttonPadding),
                 shape:
-                    const MaterialStatePropertyAll<OutlinedBorder>(buttonShape),
+                    const WidgetStatePropertyAll<OutlinedBorder>(buttonShape),
               ),
               child: Text(localizations.continueButtonLabel),
             ),
@@ -625,12 +625,13 @@ class _DynamicStepperState extends State<DynamicStepper>
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        AnimatedDefaultTextStyle(
-          style: _titleStyle(index),
-          duration: kThemeAnimationDuration,
-          curve: Curves.fastOutSlowIn,
-          child: widget.steps[index].title,
-        ),
+        if (widget.steps[index].title != null)
+          AnimatedDefaultTextStyle(
+            style: _titleStyle(index),
+            duration: kThemeAnimationDuration,
+            curve: Curves.fastOutSlowIn,
+            child: widget.steps[index].title!,
+          ),
         if (widget.steps[index].subtitle != null)
           Container(
             margin: const EdgeInsets.only(top: 2.0),
@@ -686,7 +687,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       children: <Widget>[
         PositionedDirectional(
           start: 24.0,
-          top: 0.0,
+          top: 55.0,
           bottom: 0.0,
           child: SizedBox(
             width: 24.0,
@@ -700,37 +701,41 @@ class _DynamicStepperState extends State<DynamicStepper>
             ),
           ),
         ),
-        widget.alwaysShowContent? _secondChild(index):
-        AnimatedCrossFade(
-          firstChild: Container(height: 0.0),
-          secondChild: _secondChild(index),
-          firstCurve: const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
-          secondCurve: const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
-          sizeCurve: Curves.fastOutSlowIn,
-          crossFadeState: _isCurrent(index)
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
-          duration: kThemeAnimationDuration,
-        ),
+        widget.alwaysShowContent
+            ? _secondChild(index)
+            : AnimatedCrossFade(
+                firstChild: Container(height: 0.0),
+                secondChild: _secondChild(index),
+                firstCurve:
+                    const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
+                secondCurve:
+                    const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
+                sizeCurve: Curves.fastOutSlowIn,
+                crossFadeState: _isCurrent(index)
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: kThemeAnimationDuration,
+              ),
       ],
     );
   }
 
   Container _secondChild(int index) {
     return Container(
-          margin: widget.margin ??
-              const EdgeInsetsDirectional.only(
-                start: 60.0,
-                end: 24.0,
-                bottom: 24.0,
-              ),
-          child: Column(
-            children: <Widget>[
-              widget.steps[index].content,
-              _buildVerticalControls(index),
-            ],
+      margin: widget.margin ??
+          const EdgeInsetsDirectional.only(
+            start: 60.0,
+            top: 24,
+            end: 24.0,
+            bottom: 24.0,
           ),
-        );
+      child: Column(
+        children: <Widget>[
+          widget.steps[index].content,
+          _buildVerticalControls(index),
+        ],
+      ),
+    );
   }
 
   Widget _buildVertical() {
@@ -740,27 +745,30 @@ class _DynamicStepperState extends State<DynamicStepper>
       itemCount: widget.steps.length,
       itemBuilder: (context, i) {
         i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
-        return Column(
+        return Stack(
           key: _keys[i],
           children: <Widget>[
-            InkWell(
-              onTap: widget.steps[i].state != DynamicStepState.disabled
-                  ? () {
-                      // In the vertical case we need to scroll to the newly tapped
-                      // step.
-                      Scrollable.ensureVisible(
-                        _keys[i].currentContext!,
-                        curve: Curves.fastOutSlowIn,
-                        duration: kThemeAnimationDuration,
-                      );
+            if (widget.steps[i].title != null)
+              InkWell(
+                onTap: widget.steps[i].state != DynamicStepState.disabled
+                    ? () {
+                        // In the vertical case we need to scroll to the newly tapped
+                        // step.
+                        Scrollable.ensureVisible(
+                          _keys[i].currentContext!,
+                          curve: Curves.fastOutSlowIn,
+                          duration: kThemeAnimationDuration,
+                        );
 
-                      widget.onStepTapped?.call(i);
-                    }
-                  : null,
-              canRequestFocus:
-                  widget.steps[i].state != DynamicStepState.disabled,
-              child: _buildVerticalHeader(i),
-            ),
+                        widget.onStepTapped?.call(i);
+                      }
+                    : null,
+                canRequestFocus:
+                    widget.steps[i].state != DynamicStepState.disabled,
+                child: _buildVerticalHeader(i),
+              )
+            else
+              _buildVerticalHeader(i),
             _buildVerticalBody(i),
           ],
         );

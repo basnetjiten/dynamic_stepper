@@ -27,13 +27,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _index = 0;
 
   final steps = [
-    DynamicStep(
-      title: const Text('Step 1 title'),
-      content: Container(
-        alignment: Alignment.centerLeft,
-        child: const Text('Content for Step 1'),
-      ),
-    ),
     const DynamicStep(
       title: Text('Step 2 title'),
       content: Text('Content for Step 2'),
@@ -67,7 +60,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             });
           },
           steps: steps,
-          alwaysShowContent: false,
+          alwaysShowContent: true,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -86,26 +79,33 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           FloatingActionButton(
             onPressed: () {
               steps.add(DynamicStep(
-                title: Text('Step ${steps.length + 1} title'),
-                content:Column(
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Enter Text for Step ${steps.length}',
+                  content: DecoratedBox(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                        border: Border.all(color: Colors.red)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Enter Text for Step ${steps.length}',
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Enter Text for Step ${steps.length}',
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Enter Text for Step ${steps.length}',
-                      ),
-                    ),
-                  ],
-                ),
-                isActive: true
-              ));
+                  ),
+                  isActive: true));
               setState(() {});
             },
             child: const Icon(Icons.add),
