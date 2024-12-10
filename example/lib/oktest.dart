@@ -45,18 +45,14 @@ class _DynamiccStepperState extends State<DynamiccStepper> {
                       fit: BoxFit.fitWidth,
                     ),
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Enter Text for Step ${_steps.length}',
-                    ),
+                  CustomFormField(
+                    hintText: 'Enter Text for Step ${_steps.length}',
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Enter Text for Step ${_steps.length}',
-                    ),
+                  CustomFormField(
+                    hintText: 'Enter Text for Step ${_steps.length}',
                   ),
                   const SizedBox(
                     height: 10,
@@ -70,8 +66,6 @@ class _DynamiccStepperState extends State<DynamiccStepper> {
   }
 
   void _updateAddNewStepButton() {
-    // Ensure the "Add New Step" button is always the last step
-    _steps.removeWhere((step) => step.title is ElevatedButton);
     _steps.add(
       DynamicStep(
         state: DynamicStepState.action,
@@ -79,7 +73,6 @@ class _DynamiccStepperState extends State<DynamiccStepper> {
           onPressed: _addStep,
           child: const Text('Add Step'),
         ),
-        content: const SizedBox.shrink(),
         isActive: true,
       ),
     );
@@ -87,6 +80,7 @@ class _DynamiccStepperState extends State<DynamiccStepper> {
 
   void _addStep() {
     setState(() {
+      // _currentStep++;
       _availabilityFormCubit.addAnotherAvailable();
       // Add a new step before refreshing the "Add New Step" button
       _steps.insert(
@@ -114,18 +108,14 @@ class _DynamiccStepperState extends State<DynamiccStepper> {
                           fit: BoxFit.fitWidth,
                         ),
                       ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Enter Text for Step ${_steps.length}',
-                        ),
+                      CustomFormField(
+                        hintText: 'Enter Text for Step ${_steps.length}',
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Enter Text for Step ${_steps.length}',
-                        ),
+                      CustomFormField(
+                        hintText: 'Enter Text for Step ${_steps.length}',
                       ),
                       const SizedBox(
                         height: 10,
@@ -135,9 +125,6 @@ class _DynamiccStepperState extends State<DynamiccStepper> {
                 ),
               ),
               isActive: true));
-      _currentStep++;
-      _updateAddNewStepButton();
-      print('STEPPER INDEX $_currentStep');
     });
   }
 
@@ -149,7 +136,12 @@ class _DynamiccStepperState extends State<DynamiccStepper> {
         alwaysShowContent: true,
         steps: _steps,
         currentStep: _currentStep,
-        onStepTapped: (step) {},
+        onStepDelete: (step) {
+          setState(() {
+            _steps.removeAt(step);
+          });
+          print("DELETED INDEX $step");
+        },
         controlsBuilder: (context, details) => const SizedBox(),
       ),
     );
