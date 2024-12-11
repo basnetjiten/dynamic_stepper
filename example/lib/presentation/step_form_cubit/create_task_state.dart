@@ -1,19 +1,20 @@
-part of 'therapist_availability_form_cubit.dart';
+part of 'create_task_cubit.dart';
+
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class TherapistAvailabilityFormState
-    with _$TherapistAvailabilityFormState, FormMixin {
-  const TherapistAvailabilityFormState._();
+class CreateTaskState
+    with _$CreateTaskState, FormMixin {
+  const CreateTaskState._();
 
-  const factory TherapistAvailabilityFormState({
+  const factory CreateTaskState({
     required Field<String> title,
     required Field<String> timer,
     required List<StepContentModel> steps,
     @Default(FormStatus.initial()) FormStatus status,
-  }) = _TherapistAvailabilityFormState;
+  }) = _CreateTaskState;
 
-  factory TherapistAvailabilityFormState.initial() =>
-      const TherapistAvailabilityFormState(
+  factory CreateTaskState.initial() =>
+      const CreateTaskState(
         status: FormStatus.initial(),
         title: Field<String>(value: ''),
         timer: Field<String>(value: ''),
@@ -29,10 +30,4 @@ class TherapistAvailabilityFormState
   Map<String, dynamic> get values => <String, dynamic>{};
 }
 
-class StepContentModel {
-  StepContentModel({this.title, this.timer, this.image});
 
-  String? title;
-  String? timer;
-  String? image;
-}

@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'therapist_availability_form_cubit.dart';
+part of 'create_task_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,24 +15,22 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$TherapistAvailabilityFormState {
+mixin _$CreateTaskState {
   Field<String> get title => throw _privateConstructorUsedError;
   Field<String> get timer => throw _privateConstructorUsedError;
   List<StepContentModel> get steps => throw _privateConstructorUsedError;
   FormStatus get status => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $TherapistAvailabilityFormStateCopyWith<TherapistAvailabilityFormState>
-      get copyWith => throw _privateConstructorUsedError;
+  $CreateTaskStateCopyWith<CreateTaskState> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $TherapistAvailabilityFormStateCopyWith<$Res> {
-  factory $TherapistAvailabilityFormStateCopyWith(
-          TherapistAvailabilityFormState value,
-          $Res Function(TherapistAvailabilityFormState) then) =
-      _$TherapistAvailabilityFormStateCopyWithImpl<$Res,
-          TherapistAvailabilityFormState>;
+abstract class $CreateTaskStateCopyWith<$Res> {
+  factory $CreateTaskStateCopyWith(
+          CreateTaskState value, $Res Function(CreateTaskState) then) =
+      _$CreateTaskStateCopyWithImpl<$Res, CreateTaskState>;
   @useResult
   $Res call(
       {Field<String> title,
@@ -46,10 +44,9 @@ abstract class $TherapistAvailabilityFormStateCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TherapistAvailabilityFormStateCopyWithImpl<$Res,
-        $Val extends TherapistAvailabilityFormState>
-    implements $TherapistAvailabilityFormStateCopyWith<$Res> {
-  _$TherapistAvailabilityFormStateCopyWithImpl(this._value, this._then);
+class _$CreateTaskStateCopyWithImpl<$Res, $Val extends CreateTaskState>
+    implements $CreateTaskStateCopyWith<$Res> {
+  _$CreateTaskStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -110,12 +107,11 @@ class _$TherapistAvailabilityFormStateCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$TherapistAvailabilityFormStateImplCopyWith<$Res>
-    implements $TherapistAvailabilityFormStateCopyWith<$Res> {
-  factory _$$TherapistAvailabilityFormStateImplCopyWith(
-          _$TherapistAvailabilityFormStateImpl value,
-          $Res Function(_$TherapistAvailabilityFormStateImpl) then) =
-      __$$TherapistAvailabilityFormStateImplCopyWithImpl<$Res>;
+abstract class _$$CreateTaskStateImplCopyWith<$Res>
+    implements $CreateTaskStateCopyWith<$Res> {
+  factory _$$CreateTaskStateImplCopyWith(_$CreateTaskStateImpl value,
+          $Res Function(_$CreateTaskStateImpl) then) =
+      __$$CreateTaskStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -133,13 +129,11 @@ abstract class _$$TherapistAvailabilityFormStateImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TherapistAvailabilityFormStateImplCopyWithImpl<$Res>
-    extends _$TherapistAvailabilityFormStateCopyWithImpl<$Res,
-        _$TherapistAvailabilityFormStateImpl>
-    implements _$$TherapistAvailabilityFormStateImplCopyWith<$Res> {
-  __$$TherapistAvailabilityFormStateImplCopyWithImpl(
-      _$TherapistAvailabilityFormStateImpl _value,
-      $Res Function(_$TherapistAvailabilityFormStateImpl) _then)
+class __$$CreateTaskStateImplCopyWithImpl<$Res>
+    extends _$CreateTaskStateCopyWithImpl<$Res, _$CreateTaskStateImpl>
+    implements _$$CreateTaskStateImplCopyWith<$Res> {
+  __$$CreateTaskStateImplCopyWithImpl(
+      _$CreateTaskStateImpl _value, $Res Function(_$CreateTaskStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -150,7 +144,7 @@ class __$$TherapistAvailabilityFormStateImplCopyWithImpl<$Res>
     Object? steps = null,
     Object? status = null,
   }) {
-    return _then(_$TherapistAvailabilityFormStateImpl(
+    return _then(_$CreateTaskStateImpl(
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -173,9 +167,8 @@ class __$$TherapistAvailabilityFormStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$TherapistAvailabilityFormStateImpl
-    extends _TherapistAvailabilityFormState {
-  const _$TherapistAvailabilityFormStateImpl(
+class _$CreateTaskStateImpl extends _CreateTaskState {
+  const _$CreateTaskStateImpl(
       {required this.title,
       required this.timer,
       required this.steps,
@@ -194,14 +187,14 @@ class _$TherapistAvailabilityFormStateImpl
 
   @override
   String toString() {
-    return 'TherapistAvailabilityFormState(title: $title, timer: $timer, steps: $steps, status: $status)';
+    return 'CreateTaskState(title: $title, timer: $timer, steps: $steps, status: $status)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TherapistAvailabilityFormStateImpl &&
+            other is _$CreateTaskStateImpl &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.timer, timer) || other.timer == timer) &&
             const DeepCollectionEquality().equals(other.steps, steps) &&
@@ -215,20 +208,18 @@ class _$TherapistAvailabilityFormStateImpl
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$TherapistAvailabilityFormStateImplCopyWith<
-          _$TherapistAvailabilityFormStateImpl>
-      get copyWith => __$$TherapistAvailabilityFormStateImplCopyWithImpl<
-          _$TherapistAvailabilityFormStateImpl>(this, _$identity);
+  _$$CreateTaskStateImplCopyWith<_$CreateTaskStateImpl> get copyWith =>
+      __$$CreateTaskStateImplCopyWithImpl<_$CreateTaskStateImpl>(
+          this, _$identity);
 }
 
-abstract class _TherapistAvailabilityFormState
-    extends TherapistAvailabilityFormState {
-  const factory _TherapistAvailabilityFormState(
+abstract class _CreateTaskState extends CreateTaskState {
+  const factory _CreateTaskState(
       {required final Field<String> title,
       required final Field<String> timer,
       required final List<StepContentModel> steps,
-      final FormStatus status}) = _$TherapistAvailabilityFormStateImpl;
-  const _TherapistAvailabilityFormState._() : super._();
+      final FormStatus status}) = _$CreateTaskStateImpl;
+  const _CreateTaskState._() : super._();
 
   @override
   Field<String> get title;
@@ -240,7 +231,6 @@ abstract class _TherapistAvailabilityFormState
   FormStatus get status;
   @override
   @JsonKey(ignore: true)
-  _$$TherapistAvailabilityFormStateImplCopyWith<
-          _$TherapistAvailabilityFormStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$CreateTaskStateImplCopyWith<_$CreateTaskStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

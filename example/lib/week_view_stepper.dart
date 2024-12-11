@@ -5,17 +5,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_form_field/custom_form_field.dart';
 
-class CreateMyCommsTaskWidget extends StatefulWidget {
-  const CreateMyCommsTaskWidget({super.key});
+class WeekViewStepperWidget extends StatefulWidget {
+  const WeekViewStepperWidget({super.key});
 
   @override
-  State<CreateMyCommsTaskWidget> createState() =>
-      _CreateMyCommsTaskWidgetState();
+  State<WeekViewStepperWidget> createState() => _WeekViewStepperWidgetState();
 }
 
-class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
+class _WeekViewStepperWidgetState extends State<WeekViewStepperWidget> {
   final List<DynamicStep> _steps = [];
   final CreateTaskCubit _availabilityFormCubit = CreateTaskCubit();
+
+  int _currentStep = 0;
+
+  final List<String> _days = [
+    'Day 1',
+    'Day 2',
+    'Day 3',
+    'Day 4',
+  ];
+
+  final List<List<String>> _images = [
+    [
+      'https://via.placeholder.com/150',
+      'https://via.placeholder.com/150',
+      'https://via.placeholder.com/150',
+    ],
+    [
+      'https://via.placeholder.com/150',
+      'https://via.placeholder.com/150',
+    ],
+    [
+      'https://via.placeholder.com/150',
+      'https://via.placeholder.com/150',
+      'https://via.placeholder.com/150',
+      'https://via.placeholder.com/150',
+    ],
+    [
+      'https://via.placeholder.com/150',
+    ],
+  ];
 
   @override
   void initState() {
@@ -39,9 +68,32 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
               onPressed: _addStep,
               child: const Text('Add Step'),
             )
-          : null,
-      stepperContentWidgetBuilder: (int stepIndex) {
-        return isAddButton ? const SizedBox() : _stepFormWidget(stepIndex);
+          : Text('Sunday'),
+      stepperContentWidgetBuilder: (int index) {
+        return isAddButton
+            ? const SizedBox()
+            : SizedBox(
+                height: 150,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _images[index].length,
+                  itemBuilder: (context, imageIndex) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(0,30,5,0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          _images[index][imageIndex],
+                          width: 108,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
       },
     );
   }
@@ -64,7 +116,6 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
 
   // Widget for step form
   Widget _stepFormWidget(int index) {
-
     return BlocConsumer<CreateTaskCubit, CreateTaskState>(
       bloc: _availabilityFormCubit,
       listener: (context, state) {
@@ -147,6 +198,7 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
         children: [
           Expanded(
             child: DynamicStepper(
+              isTitleOnlyStepper: true,
               alwaysShowContent: true,
               steps: _steps,
               currentStep: 0,
