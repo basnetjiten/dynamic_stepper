@@ -10,50 +10,48 @@ part 'create_task_cubit.freezed.dart';
 class CreateTaskCubit extends Cubit<CreateTaskState> {
   CreateTaskCubit() : super(CreateTaskState.initial());
 
-  void addAnotherAvailable() {
-    final List<StepContentModel> newSteps =
-        List<StepContentModel>.from(state.steps)..add(StepContentModel());
+  //Create a new empty steps and stores in a state
+  void addNextStep() {
+    final List<StepContentModel> newSteps = _getModifiableSteps
+      ..add(StepContentModel());
 
-    emit(
-      state.copyWith(
-        steps: newSteps,
-      ),
-    );
-    print("LENGHT ${newSteps.length}");
+    emit(state.copyWith(steps: newSteps));
   }
 
-  void addAvailableTime({
-    required String title,
-    required String timer,
-  }) {
-    final List<StepContentModel> availableTime =
-        List<StepContentModel>.from(state.steps);
+  //Update the value of dragged steps in UI with the steps stored in the state
+  /// * [oldIndex] Represents the old index of Step in the UI before drag
+  /// * [newIndex] Represents the new index of Step after dragging the step in the UI
+  void onStepDragged(int oldIndex, int newIndex) {
+    final List<StepContentModel> allSteps = _getModifiableSteps;
 
-    availableTime.add(StepContentModel(title: title, timer: timer));
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    StepContentModel reorderedStep = allSteps.removeAt(oldIndex);
+
+    allSteps.insert(newIndex, reorderedStep);
+
+    emit(state.copyWith(steps: allSteps));
   }
+
+  List<StepContentModel> get _getModifiableSteps =>
+      List<StepContentModel>.from(state.steps);
 
   void validateForm() {
-    if (state.isValid) {}
+    if (state.isValid) {
+
+    }
   }
 
-  List<StepContentModel> get stepsModel => state.steps;
+  List<StepContentModel> get storedSteps => state.steps;
 
   // Update StepModel data in the list
   void updateStep(int index, String? title, String? timer) {
-    final List<StepContentModel> updatedList =
-        List<StepContentModel>.from(state.steps);
+    final List<StepContentModel> updatedList = _getModifiableSteps;
 
     updatedList[index] = StepContentModel(title: title, timer: timer);
     emit(state.copyWith(steps: updatedList));
-  }
-
-  void createSteps(int total) {
-    List<StepContentModel> steps = List<StepContentModel>.generate(
-      total - 1,
-      (index) => StepContentModel(),
-    );
-
-    emit(state.copyWith(steps: steps));
   }
 
   void saveSteps() {

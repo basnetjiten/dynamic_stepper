@@ -1,21 +1,22 @@
 import 'package:dynamic_stepper/dynamic_stepper.dart';
+import 'package:example/dynamic_stepper_widget.dart';
 import 'package:example/presentation/step_form_cubit/create_task_cubit.dart';
 import 'package:example/presentation/task_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_form_field/custom_form_field.dart';
 
-class CreateMyCommsTaskWidget extends StatefulWidget {
-  const CreateMyCommsTaskWidget({super.key});
+class CreateTaskWidget extends StatefulWidget {
+  const CreateTaskWidget({super.key});
 
   @override
-  State<CreateMyCommsTaskWidget> createState() =>
-      _CreateMyCommsTaskWidgetState();
+  State<CreateTaskWidget> createState() => _CreateTaskWidgetWidgetState();
 }
 
-class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
+class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
+    with AutomaticKeepAliveClientMixin<CreateTaskWidget> {
   final List<DynamicStep> _steps = [];
-  final CreateTaskCubit _availabilityFormCubit = CreateTaskCubit();
+  final CreateTaskCubit _createTaskCubit = CreateTaskCubit();
 
   @override
   void initState() {
@@ -26,6 +27,7 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
   // Initialize the first step and the "Add New Step" button
   void _initializeSteps() {
     _steps.add(_createStep(isAddButton: false));
+    _createTaskCubit.addNextStep();
     _addAddNewStepButton();
   }
 
@@ -49,24 +51,20 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
   // Add a new step to the list
   void _addStep() {
     setState(() {
-      _availabilityFormCubit.addAnotherAvailable();
       _steps.insert(_steps.length - 1, _createStep(isAddButton: false));
+      _createTaskCubit.addNextStep();
     });
   }
 
   // Add the "Add New Step" button
   void _addAddNewStepButton() {
-    setState(() {
-      _steps.add(_createStep(isAddButton: true));
-      _availabilityFormCubit.createSteps(_steps.length);
-    });
+    setState(() => _steps.add(_createStep(isAddButton: true)));
   }
 
   // Widget for step form
   Widget _stepFormWidget(int index) {
-
     return BlocConsumer<CreateTaskCubit, CreateTaskState>(
-      bloc: _availabilityFormCubit,
+      bloc: _createTaskCubit,
       listener: (context, state) {
         state.status.maybeWhen(
             orElse: () {},
@@ -107,11 +105,12 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
 
   // Title input field widget
   Widget _buildTitleField(int index, List<StepContentModel> steps) {
+    final timer = _createTaskCubit.storedSteps[index].timer;
     return CustomFormField(
+      initialValue: timer,
       hintText: 'Title for Step $index',
       onChanged: (title) {
-        final timer = _availabilityFormCubit.stepsModel[index].timer;
-        _availabilityFormCubit.updateStep(index, title, timer);
+        _createTaskCubit.updateStep(index, title, timer);
       },
       errorText: _getTitleErrorText(steps, index),
     );
@@ -119,11 +118,12 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
 
   // Timer input field widget
   Widget _buildTimerField(int index, List<StepContentModel> steps) {
+    final title = _createTaskCubit.storedSteps[index].title;
     return CustomFormField(
+      initialValue: title,
       hintText: 'Enter Timer for Step $index',
       onChanged: (timer) {
-        final title = _availabilityFormCubit.stepsModel[index].title;
-        _availabilityFormCubit.updateStep(index, title ?? "", timer);
+        _createTaskCubit.updateStep(index, title ?? "", timer);
       },
       errorText: _getTimerErrorText(steps, index),
     );
@@ -141,21 +141,22 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Dynamic Stepper')),
       body: Column(
         children: [
           Expanded(
-            child: DynamicStepper(
-              alwaysShowContent: true,
+            child: DynamicStepperWidget(
+              enableSwipeAction: true,
+              showContent: true,
               steps: _steps,
-              currentStep: 0,
-              onStepDelete: (step) {
-                setState(() {
-                  _steps.removeAt(step);
-                });
-              },
-              controlsBuilder: (context, details) => const SizedBox(),
+              onStepDeleted: (index) => setState(
+                () {
+                  _steps.removeAt(index);
+                },
+              ),
+              onStepDragged: _createTaskCubit.onStepDragged,
             ),
           ),
           const SizedBox(
@@ -163,7 +164,7 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
           ),
           TextButton(
             onPressed: () {
-              _availabilityFormCubit.saveSteps();
+              _createTaskCubit.saveSteps();
             },
             child: const Text('Add Step'),
           ),
@@ -174,4 +175,7 @@ class _CreateMyCommsTaskWidgetState extends State<CreateMyCommsTaskWidget> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

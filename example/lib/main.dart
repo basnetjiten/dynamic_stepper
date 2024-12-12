@@ -1,8 +1,5 @@
-import 'package:example/oktest.dart';
 import 'package:example/tab_view.dart';
-import 'package:example/week_view_stepper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
 
@@ -29,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: _title,
-      home: WeekViewStepperWidget(),
+      home: HomePage(),
     );
   }
 }

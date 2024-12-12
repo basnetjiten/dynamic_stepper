@@ -1,18 +1,8 @@
-import 'package:example/week_view.dart';
+import 'package:example/create_task_widget.dart';
+import 'package:example/week_view_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    );
-  }
-}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -81,10 +71,10 @@ class _HomePageState extends State<HomePage>
 
                 return TabBarView(
                   controller: _tabController,
-                  children:  [
+                  children:  const [
                     Center(child: Text('Screen 1')),
-                    Center(child: Text('Screen 2')),
-                    StepperWithDaysView()
+                    CreateTaskWidget(),
+                    WeekViewStepperWidget()
                   ],
                 );
               },
