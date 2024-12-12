@@ -16,8 +16,7 @@ class CreateTaskWidget extends StatefulWidget {
 class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
     with AutomaticKeepAliveClientMixin<CreateTaskWidget> {
   final List<DynamicStep> _steps = [];
-  final CreateTaskCubit _createTaskCubit = CreateTaskCubit()
-    ..addNextStep();
+  final CreateTaskCubit _createTaskCubit = CreateTaskCubit()..addNextStep();
 
   @override
   void initState() {
@@ -38,9 +37,9 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
       state: isAddButton ? DynamicStepState.action : DynamicStepState.indexed,
       title: isAddButton
           ? ElevatedButton(
-        onPressed: _addStep,
-        child: const Text('Add Step'),
-      )
+              onPressed: _addStep,
+              child: const Text('Add Step'),
+            )
           : null,
       stepperContentWidgetBuilder: (int stepIndex) {
         return isAddButton ? null : _stepFormWidget(stepIndex);
@@ -58,8 +57,7 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
 
   // Add the "Add New Step" button
   void _addAddNewStepButton() {
-    setState(() => _steps.add(_createStep(isAddButton: true)));
-
+    _steps.add(_createStep(isAddButton: true));
   }
 
   // Widget for step form
@@ -72,16 +70,18 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
             error: (error) {
               print('ERROR $error');
             });
-      },child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Column(
-        children: [
-          _buildStepImage(),
-          _buildTitleField(index),
-          _buildTimerField(index),
-        ],
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: Column(
+          children: [
+            _buildStepImage(),
+            _buildTitleField(index),
+            _buildTimerField(index),
+          ],
+        ),
       ),
-    ),);
+    );
   }
 
   // Step image widget
@@ -99,19 +99,17 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
 
   // Title input field widget
   Widget _buildTitleField(int index) {
-   // final titleField = _createTaskCubit.storedSteps[index].timerField;
     return BlocSelector<CreateTaskCubit, CreateTaskState, Field<String?>?>(
       bloc: _createTaskCubit,
-      selector: (state)=>state.steps[index]?.titleField,
+      selector: (state) => state.steps[index]?.titleField,
       builder: (context, titleField) {
-       // print('ERROR MESSAGE TITLE ${titleField?.errorMessage}');
         return CustomFormField(
-         initialValue: titleField?.value,
+          initialValue: titleField?.value,
           hintText: 'Title for Step $index',
           onChanged: (title) {
             _createTaskCubit.onStepFormChanged(index: index, title: title);
           },
-         errorText: titleField?.errorMessage,
+          errorText: titleField?.errorMessage,
         );
       },
     );
@@ -121,16 +119,15 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
   Widget _buildTimerField(int index) {
     return BlocSelector<CreateTaskCubit, CreateTaskState, Field<String?>?>(
       bloc: _createTaskCubit,
-      selector: (state)=>state.steps[index]?.timerField,
+      selector: (state) => state.steps[index]?.timerField,
       builder: (context, timerField) {
-       //print('ERROR TIMER MESSAGE ${timerField?.errorMessage}');
         return CustomFormField(
-       initialValue: timerField?.value,
+          initialValue: timerField?.value,
           hintText: 'Timer for Step $index',
           onChanged: (timer) {
             _createTaskCubit.onStepFormChanged(index: index, timer: timer);
           },
-       errorText: timerField?.errorMessage,
+          errorText: timerField?.errorMessage,
         );
       },
     );
@@ -140,7 +137,17 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Dynamic Stepper')),
+      appBar: AppBar(
+        title: const Text('Dynamic Stepper'),
+        actions: [
+          IconButton(onPressed: () {
+
+          }, icon: const Icon(Icons.add)),
+          IconButton(onPressed: () {
+
+          }, icon: const Icon(Icons.safety_check))
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
@@ -148,12 +155,12 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
               enableSwipeAction: true,
               showContent: true,
               steps: _steps,
-              onStepDeleted: (index) =>
-                  setState(
-                        () {
-                      _steps.removeAt(index);
-                    },
-                  ),
+              onStepDeleted: (index) => setState(
+                () {
+                  _steps.removeAt(index);
+                  _createTaskCubit.deleteStep(index);
+                },
+              ),
               onStepDragged: _createTaskCubit.onStepDragged,
             ),
           ),

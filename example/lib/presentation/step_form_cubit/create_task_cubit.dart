@@ -18,14 +18,13 @@ class CreateTaskCubit extends Cubit<CreateTaskState> {
           titleField: Field<String?>(value: null),
           timerField: Field<String?>(value: null)));
 
-    emit(state.copyWith(steps: newSteps, status: const FormStatus.initial()));
+    emit(state.copyWith(steps: newSteps, status: const FormStatus.success()));
   }
 
   //Update the value of dragged steps in UI with the steps stored in the state
   /// * [oldIndex] Represents the old index of Step in the UI before drag
   /// * [newIndex] Represents the new index of Step after dragging the step in the UI
   void onStepDragged(int oldIndex, int newIndex) {
-
     final List<StepContentModel> allSteps = _getModifiableSteps;
 
     if (oldIndex < newIndex) {
@@ -52,20 +51,19 @@ class CreateTaskCubit extends Cubit<CreateTaskState> {
     Field<String?>? titleField = updatedList[index].titleField;
     Field<String?>? timerField = updatedList[index].timerField;
 
-      final timerValue = timer ?? timerField?.value;
-      final titleValue = title ?? titleField?.value;
+    final timerValue = timer ?? timerField?.value;
+    final titleValue = title ?? titleField?.value;
 
-      timerField = timerField?.copyWith(
-          value: timerValue, errorMessage: _getTimerErrorText(timerValue));
+    timerField = timerField?.copyWith(
+        value: timerValue, errorMessage: _getTimerErrorText(timerValue));
 
-      titleField = titleField?.copyWith(
-          value: titleValue, errorMessage: _getTitleErrorText(titleValue));
+    titleField = titleField?.copyWith(
+        value: titleValue, errorMessage: _getTitleErrorText(titleValue));
 
-      updatedList[index] =
-          StepContentModel(titleField: titleField, timerField: timerField);
+    updatedList[index] =
+        StepContentModel(titleField: titleField, timerField: timerField);
 
-      emit(state.copyWith(steps: updatedList));
-    }
+    emit(state.copyWith(steps: updatedList));
   }
 
   void saveSteps() {
@@ -81,16 +79,14 @@ class CreateTaskCubit extends Cubit<CreateTaskState> {
           (step.timerField?.value == null) || (step.titleField?.value == null);
 
       if (hasError) {
-        //print("jere $hasError");
         hasInvalidStep = true;
         return step.copyWith(
-          titleField:
-              step.titleField?.copyWith(errorMessage: 'Title is required'),
-          timerField:
-              step.timerField?.copyWith(errorMessage: 'Timer is required'),
+          titleField: step.titleField?.copyWith(
+              errorMessage: _getTitleErrorText(step.titleField?.value ?? '')),
+          timerField: step.timerField?.copyWith(
+              errorMessage: _getTimerErrorText(step.timerField?.value ?? '')),
         );
       } else {
-        // print("hereee");
         hasInvalidStep = false;
         return step;
       }
@@ -98,7 +94,6 @@ class CreateTaskCubit extends Cubit<CreateTaskState> {
 
     // Emit an error state only if there are invalid steps
 
-    //print(hasInvalidStep);
     if (hasInvalidStep) {
       emit(state.copyWith(
         steps: updatedSteps,
@@ -110,11 +105,12 @@ class CreateTaskCubit extends Cubit<CreateTaskState> {
         steps: updatedSteps,
         status: const FormStatus.success(),
       ));
-      updatedSteps.forEach((step) {
-        print("TITLE: ${step.titleField?.value}");
-        print("TIMER: ${step.titleField?.value}");
-      });
     }
+  }
+
+  void deleteStep(int index) {
+    final updatedSteps = _getModifiableSteps..removeAt(index);
+    emit(state.copyWith(steps: updatedSteps));
   }
 
   // Get error text for the title field

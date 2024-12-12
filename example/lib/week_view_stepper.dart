@@ -1,10 +1,7 @@
 import 'package:dynamic_stepper/dynamic_stepper.dart';
 import 'package:example/dynamic_stepper_widget.dart';
 import 'package:example/presentation/step_form_cubit/create_task_cubit.dart';
-import 'package:example/presentation/task_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:simple_form_field/custom_form_field.dart';
 
 class WeekViewStepperWidget extends StatefulWidget {
   const WeekViewStepperWidget({super.key});
