@@ -16,9 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$CreateTaskState {
-  Field<String> get title => throw _privateConstructorUsedError;
-  Field<String> get timer => throw _privateConstructorUsedError;
-  List<StepContentModel> get steps => throw _privateConstructorUsedError;
+  List<StepContentModel?> get steps => throw _privateConstructorUsedError;
   FormStatus get status => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -32,14 +30,8 @@ abstract class $CreateTaskStateCopyWith<$Res> {
           CreateTaskState value, $Res Function(CreateTaskState) then) =
       _$CreateTaskStateCopyWithImpl<$Res, CreateTaskState>;
   @useResult
-  $Res call(
-      {Field<String> title,
-      Field<String> timer,
-      List<StepContentModel> steps,
-      FormStatus status});
+  $Res call({List<StepContentModel?> steps, FormStatus status});
 
-  $FieldCopyWith<String, $Res> get title;
-  $FieldCopyWith<String, $Res> get timer;
   $FormStatusCopyWith<$Res> get status;
 }
 
@@ -56,45 +48,19 @@ class _$CreateTaskStateCopyWithImpl<$Res, $Val extends CreateTaskState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
-    Object? timer = null,
     Object? steps = null,
     Object? status = null,
   }) {
     return _then(_value.copyWith(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as Field<String>,
-      timer: null == timer
-          ? _value.timer
-          : timer // ignore: cast_nullable_to_non_nullable
-              as Field<String>,
       steps: null == steps
           ? _value.steps
           : steps // ignore: cast_nullable_to_non_nullable
-              as List<StepContentModel>,
+              as List<StepContentModel?>,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as FormStatus,
     ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $FieldCopyWith<String, $Res> get title {
-    return $FieldCopyWith<String, $Res>(_value.title, (value) {
-      return _then(_value.copyWith(title: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $FieldCopyWith<String, $Res> get timer {
-    return $FieldCopyWith<String, $Res>(_value.timer, (value) {
-      return _then(_value.copyWith(timer: value) as $Val);
-    });
   }
 
   @override
@@ -114,16 +80,8 @@ abstract class _$$CreateTaskStateImplCopyWith<$Res>
       __$$CreateTaskStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {Field<String> title,
-      Field<String> timer,
-      List<StepContentModel> steps,
-      FormStatus status});
+  $Res call({List<StepContentModel?> steps, FormStatus status});
 
-  @override
-  $FieldCopyWith<String, $Res> get title;
-  @override
-  $FieldCopyWith<String, $Res> get timer;
   @override
   $FormStatusCopyWith<$Res> get status;
 }
@@ -139,24 +97,14 @@ class __$$CreateTaskStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
-    Object? timer = null,
     Object? steps = null,
     Object? status = null,
   }) {
     return _then(_$CreateTaskStateImpl(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as Field<String>,
-      timer: null == timer
-          ? _value.timer
-          : timer // ignore: cast_nullable_to_non_nullable
-              as Field<String>,
       steps: null == steps
           ? _value.steps
           : steps // ignore: cast_nullable_to_non_nullable
-              as List<StepContentModel>,
+              as List<StepContentModel?>,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -169,25 +117,18 @@ class __$$CreateTaskStateImplCopyWithImpl<$Res>
 
 class _$CreateTaskStateImpl extends _CreateTaskState {
   const _$CreateTaskStateImpl(
-      {required this.title,
-      required this.timer,
-      required this.steps,
-      this.status = const FormStatus.initial()})
+      {required this.steps, this.status = const FormStatus.initial()})
       : super._();
 
   @override
-  final Field<String> title;
-  @override
-  final Field<String> timer;
-  @override
-  final List<StepContentModel> steps;
+  final List<StepContentModel?> steps;
   @override
   @JsonKey()
   final FormStatus status;
 
   @override
   String toString() {
-    return 'CreateTaskState(title: $title, timer: $timer, steps: $steps, status: $status)';
+    return 'CreateTaskState(steps: $steps, status: $status)';
   }
 
   @override
@@ -195,15 +136,13 @@ class _$CreateTaskStateImpl extends _CreateTaskState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CreateTaskStateImpl &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.timer, timer) || other.timer == timer) &&
             const DeepCollectionEquality().equals(other.steps, steps) &&
             (identical(other.status, status) || other.status == status));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, title, timer,
-      const DeepCollectionEquality().hash(steps), status);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(steps), status);
 
   @JsonKey(ignore: true)
   @override
@@ -215,18 +154,12 @@ class _$CreateTaskStateImpl extends _CreateTaskState {
 
 abstract class _CreateTaskState extends CreateTaskState {
   const factory _CreateTaskState(
-      {required final Field<String> title,
-      required final Field<String> timer,
-      required final List<StepContentModel> steps,
+      {required final List<StepContentModel?> steps,
       final FormStatus status}) = _$CreateTaskStateImpl;
   const _CreateTaskState._() : super._();
 
   @override
-  Field<String> get title;
-  @override
-  Field<String> get timer;
-  @override
-  List<StepContentModel> get steps;
+  List<StepContentModel?> get steps;
   @override
   FormStatus get status;
   @override
