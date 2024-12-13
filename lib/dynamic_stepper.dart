@@ -346,7 +346,7 @@ class DynamicStepper extends StatefulWidget {
 
 class _DynamicStepperState extends State<DynamicStepper>
     with TickerProviderStateMixin {
-  late List<GlobalKey> _keys;
+  late List<GlobalObjectKey> _keys;
   final Map<int, DynamicStepState> _oldStates = <int, DynamicStepState>{};
   late List<DynamicStep> _steps;
   late int _currentStep;
@@ -356,7 +356,8 @@ class _DynamicStepperState extends State<DynamicStepper>
     super.initState();
     _steps = widget.steps;
     _currentStep = widget.currentStep;
-    _keys = List<GlobalKey>.generate(_steps.length, (int i) => GlobalKey());
+    _keys = List<GlobalObjectKey>.generate(
+        _steps.length, (int i) => GlobalObjectKey(i));
 
     for (int i = 0; i < _steps.length; i += 1) {
       _oldStates[i] = _steps[i].state;
@@ -366,7 +367,7 @@ class _DynamicStepperState extends State<DynamicStepper>
   @override
   void didUpdateWidget(DynamicStepper oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _keys = List<GlobalKey>.generate(_steps.length, (int i) => GlobalKey());
+
     for (int i = 0; i < oldWidget.steps.length; i += 1) {
       _oldStates[i] = oldWidget.steps[i].state;
     }
@@ -827,7 +828,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       physics: widget.physics,
       itemCount: _steps.length,
       itemBuilder: (context, i) {
-        i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
+        i < _keys.length ? _keys[i] : _keys.add(GlobalObjectKey(i));
         if (widget.enableSwipeAction) {
           return Slidable(
             key: GlobalObjectKey(_steps[i]),
