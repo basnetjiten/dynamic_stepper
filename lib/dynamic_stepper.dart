@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 /*
- * Edited by Saúl Ramírez
+ * Edited by Saúl Ramírez and Jiten Basnet
  * Credits: https://gist.github.com/sanket143/bf20a16775095e0be33b8a8156c34cb9
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 /// The state of a [DynamicStep] which is used to control the style of the circle and
 /// text.
@@ -99,6 +100,8 @@ class DynamicControlsDetails {
 typedef ControlsWidgetBuilder = Widget Function(
     BuildContext context, DynamicControlsDetails details);
 
+typedef StepperContentWidgetBuilder = Widget? Function(int index);
+
 const TextStyle _kStepStyle = TextStyle(
   fontSize: 12.0,
   color: Colors.white,
@@ -128,12 +131,17 @@ class DynamicStep {
   /// The [title], [content], and [state] arguments must not be null.
   const DynamicStep(
       {this.title,
+      this.stepperIcon,
+      required this.stepperContentWidgetBuilder,
       this.subtitle,
-      required this.content,
+      this.content,
       this.state = DynamicStepState.indexed,
       this.isActive = false,
       this.label,
       this.actionIcon});
+
+  final Widget? stepperIcon;
+  final StepperContentWidgetBuilder stepperContentWidgetBuilder;
 
   /// The title of the step that typically describes it.
   final Widget? title;
@@ -149,7 +157,7 @@ class DynamicStep {
   /// The content of the step that appears below the [title] and [subtitle].
   ///
   /// Below the content, every step has a 'continue' and 'cancel' button.
-  final Widget content;
+  final Widget? content;
 
   /// The state of the step which determines the styling of its components
   /// and whether steps are interactive.
@@ -191,21 +199,35 @@ class DynamicStepper extends StatefulWidget {
   /// new one.
   ///
   /// The [steps], [type], and [currentStep] arguments must not be null.
-  const DynamicStepper(
-      {super.key,
-      required this.steps,
-      this.physics,
-      this.type = DynamicStepperType.vertical,
-      this.currentStep = 0,
-      this.onStepTapped,
-      this.onStepContinue,
-      this.onStepCancel,
-      this.controlsBuilder,
-      this.elevation,
-      this.margin,
-      this.alwaysShowContent = true,
-      this.actionIcon})
-      : assert(0 <= currentStep && currentStep < steps.length);
+  const DynamicStepper({
+    super.key,
+    required this.steps,
+    this.physics,
+    this.type = DynamicStepperType.vertical,
+    this.currentStep = 0,
+    this.onStepTapped,
+    this.onStepContinue,
+    this.onStepCancel,
+    this.controlsBuilder,
+    this.elevation,
+    this.margin,
+    this.alwaysShowContent = true,
+    this.isTitleOnlyStepper = false,
+    this.enableSwipeAction = false,
+    this.actionIcon,
+    this.onStepDelete,
+    this.buildDefaultDragHandles = true,
+    this.onStepDragged,
+  }) : assert(0 <= currentStep && currentStep < steps.length);
+
+  //Enable or disable item to be draggable in a ReorderableListView
+  final bool buildDefaultDragHandles;
+
+  /// Shows only title widget in the stepper
+  final bool enableSwipeAction;
+
+  /// Shows only title widget in the stepper
+  final bool isTitleOnlyStepper;
 
   /// Icon to use for stepper circle. usually an action icon
   final Widget? actionIcon;
@@ -239,6 +261,14 @@ class DynamicStepper extends StatefulWidget {
   /// The callback called when a step is tapped, with its index passed as
   /// an argument.
   final ValueChanged<int>? onStepTapped;
+
+  /// The callback called when a step is deleted, with its index passed as
+  /// an argument.
+  final ValueChanged<int>? onStepDelete;
+
+  /// The callback called when a step is dragged, with its index passed as
+  /// an argument.
+  final Function(int oldIndex, int newIndex)? onStepDragged;
 
   /// The callback called when the 'continue' button is tapped.
   ///
@@ -318,17 +348,21 @@ class _DynamicStepperState extends State<DynamicStepper>
     with TickerProviderStateMixin {
   late List<GlobalKey> _keys;
   final Map<int, DynamicStepState> _oldStates = <int, DynamicStepState>{};
+  late List<DynamicStep> _steps;
+  late int _currentStep;
 
   @override
   void initState() {
     super.initState();
+    _steps = widget.steps;
+    _currentStep = widget.currentStep;
     _keys = List<GlobalKey>.generate(
-      widget.steps.length,
+      _steps.length,
       (int i) => GlobalKey(),
     );
 
-    for (int i = 0; i < widget.steps.length; i += 1) {
-      _oldStates[i] = widget.steps[i].state;
+    for (int i = 0; i < _steps.length; i += 1) {
+      _oldStates[i] = _steps[i].state;
     }
   }
 
@@ -346,11 +380,11 @@ class _DynamicStepperState extends State<DynamicStepper>
   }
 
   bool _isLast(int index) {
-    return widget.steps.length - 1 == index;
+    return _steps.length - 1 == index;
   }
 
   bool _isCurrent(int index) {
-    return widget.currentStep == index;
+    return _currentStep == index;
   }
 
   bool _isDark() {
@@ -358,7 +392,7 @@ class _DynamicStepperState extends State<DynamicStepper>
   }
 
   bool _isLabel() {
-    for (final DynamicStep step in widget.steps) {
+    for (final DynamicStep step in _steps) {
       if (step.label != null) {
         return true;
       }
@@ -376,8 +410,8 @@ class _DynamicStepperState extends State<DynamicStepper>
 
   Widget _buildCircleChild(int index, bool oldState) {
     final DynamicStepState state =
-        oldState ? _oldStates[index]! : widget.steps[index].state;
-    final bool isDarkActive = _isDark() && widget.steps[index].isActive;
+        oldState ? _oldStates[index]! : _steps[index].state;
+    final bool isDarkActive = _isDark() && _steps[index].isActive;
     switch (state) {
       case DynamicStepState.indexed:
       case DynamicStepState.disabled:
@@ -402,22 +436,23 @@ class _DynamicStepperState extends State<DynamicStepper>
       case DynamicStepState.error:
         return const Text('!', style: _kStepStyle);
       case DynamicStepState.action:
-        return widget.actionIcon ?? Icon(
-          Icons.add,
-          color: isDarkActive ? _kCircleActiveDark : _kCircleActiveLight,
-          size: 18.0,
-        );
+        return widget.actionIcon ??
+            Icon(
+              Icons.add,
+              color: isDarkActive ? _kCircleActiveDark : _kCircleActiveLight,
+              size: 18.0,
+            );
     }
   }
 
   Color _circleColor(int index) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     if (!_isDark()) {
-      return widget.steps[index].isActive
+      return _steps[index].isActive
           ? colorScheme.primary
           : colorScheme.onSurface.withOpacity(0.38);
     } else {
-      return widget.steps[index].isActive
+      return _steps[index].isActive
           ? colorScheme.secondary
           : colorScheme.surface;
     }
@@ -436,8 +471,8 @@ class _DynamicStepperState extends State<DynamicStepper>
           shape: BoxShape.circle,
         ),
         child: Center(
-          child: _buildCircleChild(index,
-              oldState && widget.steps[index].state == DynamicStepState.error),
+          child: _buildCircleChild(
+              index, oldState && _steps[index].state == DynamicStepState.error),
         ),
       ),
     );
@@ -460,10 +495,8 @@ class _DynamicStepperState extends State<DynamicStepper>
             child: Align(
               alignment: const Alignment(0.0, 0.8),
               // 0.8 looks better than the geometrical 0.33.
-              child: _buildCircleChild(
-                  index,
-                  oldState &&
-                      widget.steps[index].state != DynamicStepState.error),
+              child: _buildCircleChild(index,
+                  oldState && _steps[index].state != DynamicStepState.error),
             ),
           ),
         ),
@@ -472,20 +505,20 @@ class _DynamicStepperState extends State<DynamicStepper>
   }
 
   Widget _buildIcon(int index) {
-    if (widget.steps[index].state != _oldStates[index]) {
+    if (_steps[index].state != _oldStates[index]) {
       return AnimatedCrossFade(
         firstChild: _buildCircle(index, true),
         secondChild: _buildTriangle(index, true),
         firstCurve: const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
         secondCurve: const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
         sizeCurve: Curves.fastOutSlowIn,
-        crossFadeState: widget.steps[index].state == DynamicStepState.error
+        crossFadeState: _steps[index].state == DynamicStepState.error
             ? CrossFadeState.showSecond
             : CrossFadeState.showFirst,
         duration: kThemeAnimationDuration,
       );
     } else {
-      if (widget.steps[index].state != DynamicStepState.error) {
+      if (_steps[index].state != DynamicStepState.error) {
         return _buildCircle(index, false);
       } else {
         return _buildTriangle(index, false);
@@ -498,7 +531,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       return widget.controlsBuilder!(
         context,
         DynamicControlsDetails(
-          currentStep: widget.currentStep,
+          currentStep: _currentStep,
           onStepContinue: widget.onStepContinue,
           onStepCancel: widget.onStepCancel,
           stepIndex: stepIndex,
@@ -580,7 +613,7 @@ class _DynamicStepperState extends State<DynamicStepper>
     final ThemeData themeData = Theme.of(context);
     final TextTheme textTheme = themeData.textTheme;
 
-    switch (widget.steps[index].state) {
+    switch (_steps[index].state) {
       case DynamicStepState.action:
       case DynamicStepState.indexed:
       case DynamicStepState.editing:
@@ -601,7 +634,7 @@ class _DynamicStepperState extends State<DynamicStepper>
     final ThemeData themeData = Theme.of(context);
     final TextTheme textTheme = themeData.textTheme;
 
-    switch (widget.steps[index].state) {
+    switch (_steps[index].state) {
       case DynamicStepState.action:
       case DynamicStepState.indexed:
       case DynamicStepState.editing:
@@ -622,7 +655,7 @@ class _DynamicStepperState extends State<DynamicStepper>
     final ThemeData themeData = Theme.of(context);
     final TextTheme textTheme = themeData.textTheme;
 
-    switch (widget.steps[index].state) {
+    switch (_steps[index].state) {
       case DynamicStepState.action:
       case DynamicStepState.indexed:
       case DynamicStepState.editing:
@@ -644,21 +677,21 @@ class _DynamicStepperState extends State<DynamicStepper>
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        if (widget.steps[index].title != null)
+        if (_steps[index].title != null)
           AnimatedDefaultTextStyle(
             style: _titleStyle(index),
             duration: kThemeAnimationDuration,
             curve: Curves.fastOutSlowIn,
-            child: widget.steps[index].title!,
+            child: _steps[index].title!,
           ),
-        if (widget.steps[index].subtitle != null)
+        if (_steps[index].subtitle != null)
           Container(
             margin: const EdgeInsets.only(top: 2.0),
             child: AnimatedDefaultTextStyle(
               style: _subtitleStyle(index),
               duration: kThemeAnimationDuration,
               curve: Curves.fastOutSlowIn,
-              child: widget.steps[index].subtitle!,
+              child: _steps[index].subtitle!,
             ),
           ),
       ],
@@ -666,11 +699,11 @@ class _DynamicStepperState extends State<DynamicStepper>
   }
 
   Widget _buildLabelText(int index) {
-    if (widget.steps[index].label != null) {
+    if (_steps[index].label != null) {
       return AnimatedDefaultTextStyle(
         style: _labelStyle(index),
         duration: kThemeAnimationDuration,
-        child: widget.steps[index].label!,
+        child: _steps[index].label!,
       );
     }
     return const SizedBox();
@@ -685,17 +718,28 @@ class _DynamicStepperState extends State<DynamicStepper>
             children: <Widget>[
               // Line parts are always added in order for the ink splash to
               // flood the tips of the connector lines.
-              _buildLine(!_isFirst(index)),
-              _buildIcon(index),
-              _buildLine(!_isLast(index)),
+
+              if (!widget.isTitleOnlyStepper) ...[
+                _buildLine(!_isFirst(index)),
+                _buildIcon(index),
+              ],
+
+              if (widget.isTitleOnlyStepper) ...[
+                widget.steps[index].stepperIcon ?? _buildHeaderText(index)
+              ],
+              if (!widget.isTitleOnlyStepper) ...[
+                _buildLine(!_isLast(index)),
+              ],
             ],
           ),
-          Expanded(
-            child: Container(
-              margin: const EdgeInsetsDirectional.only(start: 12.0),
-              child: _buildHeaderText(index),
+          if (!widget.isTitleOnlyStepper) ...[
+            Expanded(
+              child: Container(
+                margin: const EdgeInsetsDirectional.only(start: 12.0),
+                child: _buildHeaderText(index),
+              ),
             ),
-          ),
+          ]
         ],
       ),
     );
@@ -704,22 +748,23 @@ class _DynamicStepperState extends State<DynamicStepper>
   Widget _buildVerticalBody(int index) {
     return Stack(
       children: <Widget>[
-        PositionedDirectional(
-          start: 24.0,
-          top: 55.0,
-          bottom: 0.0,
-          child: SizedBox(
-            width: 24.0,
-            child: Center(
-              child: SizedBox(
-                width: _isLast(index) ? 0.0 : 1.0,
-                child: Container(
-                  color: Colors.grey.shade400,
+        if (widget.steps[index].stepperContentWidgetBuilder(index) != null)
+          PositionedDirectional(
+            start: 24.0,
+            top: widget.isTitleOnlyStepper ? 27.0 : 50,
+            bottom: 0.0,
+            child: SizedBox(
+              width: 24.0,
+              child: Center(
+                child: SizedBox(
+                  width: _isLast(index) ? 0.0 : 1.0,
+                  child: Container(
+                    color: Colors.grey.shade400,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
         widget.alwaysShowContent
             ? _secondChild(index)
             : AnimatedCrossFade(
@@ -750,7 +795,8 @@ class _DynamicStepperState extends State<DynamicStepper>
           ),
       child: Column(
         children: <Widget>[
-          widget.steps[index].content,
+          widget.steps[index].stepperContentWidgetBuilder(index) ??
+              const SizedBox(),
           _buildVerticalControls(index),
         ],
       ),
@@ -758,53 +804,130 @@ class _DynamicStepperState extends State<DynamicStepper>
   }
 
   Widget _buildVertical() {
-    return ListView.builder(
+    return ReorderableListView.builder(
+      buildDefaultDragHandles: widget.buildDefaultDragHandles,
+      onReorder: (int oldIndex, int newIndex) {
+        if (oldIndex < newIndex) {
+          newIndex -= 1;
+        }
+
+        if (_isLast(newIndex)) {
+          return;
+        }
+
+        if (_isLast(oldIndex) || _isLast(newIndex)) {
+          return;
+        }
+        setState(() {
+          final DynamicStep reorderedStep = _steps.removeAt(oldIndex);
+
+          _steps.insert(newIndex, reorderedStep);
+          _currentStep = newIndex;
+          widget.onStepDragged?.call(oldIndex, newIndex);
+        });
+      },
       shrinkWrap: true,
       physics: widget.physics,
-      itemCount: widget.steps.length,
+      itemCount: _steps.length,
       itemBuilder: (context, i) {
         i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
-        return Stack(
-          key: _keys[i],
-          children: <Widget>[
-            if (widget.steps[i].title != null)
-              InkWell(
-                onTap: widget.steps[i].state != DynamicStepState.disabled
-                    ? () {
-                        // In the vertical case we need to scroll to the newly tapped
-                        // step.
-                        Scrollable.ensureVisible(
-                          _keys[i].currentContext!,
-                          curve: Curves.fastOutSlowIn,
-                          duration: kThemeAnimationDuration,
-                        );
+        if (widget.enableSwipeAction) {
+          return Slidable(
+            enabled: !_isLast(i) && !_isFirst(i),
+            key: ObjectKey(_steps[i]),
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              children: [
+                SlidableAction(
+                  borderRadius: BorderRadius.circular(10),
+                  onPressed: (context) {
+                    widget.onStepDelete?.call(i);
+                  },
+                  foregroundColor: Colors.redAccent,
+                  icon: Icons.delete,
+                  label: 'Delete',
+                ),
+              ],
+            ),
+            child: Container(
+              color: Colors.white60,
+              child: Stack(
+                children: <Widget>[
+                  if (_steps[i].title != null)
+                    InkWell(
+                      onTap: _steps[i].state != DynamicStepState.disabled
+                          ? () {
+                              // In the vertical case we need to scroll to the newly tapped
+                              // step.
+                              Scrollable.ensureVisible(
+                                _keys[i].currentContext!,
+                                curve: Curves.fastOutSlowIn,
+                                duration: kThemeAnimationDuration,
+                              );
 
-                        widget.onStepTapped?.call(i);
-                      }
-                    : null,
-                canRequestFocus:
-                    widget.steps[i].state != DynamicStepState.disabled,
-                child: _buildVerticalHeader(i),
-              )
-            else
-              _buildVerticalHeader(i),
-            _buildVerticalBody(i),
-          ],
-        );
+                              widget.onStepTapped?.call(i);
+                            }
+                          : null,
+                      canRequestFocus:
+                          _steps[i].state != DynamicStepState.disabled,
+                      child: _buildVerticalHeader(i),
+                    )
+                  else
+                    _buildVerticalHeader(i),
+                  _buildVerticalBody(i),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return _stepperContentWidget(i);
       },
+    );
+  }
+
+  Container _stepperContentWidget(int i) {
+    return Container(
+      key: ObjectKey(_steps[i]),
+      color: Colors.white60,
+      child: Stack(
+        children: <Widget>[
+          if (_steps[i].title != null)
+            InkWell(
+              onTap: _steps[i].state != DynamicStepState.disabled
+                  ? () {
+                      // In the vertical case we need to scroll to the newly tapped
+                      // step.
+                      Scrollable.ensureVisible(
+                        _keys[i].currentContext!,
+                        curve: Curves.fastOutSlowIn,
+                        duration: kThemeAnimationDuration,
+                      );
+
+                      widget.onStepTapped?.call(i);
+                    }
+                  : null,
+              canRequestFocus: _steps[i].state != DynamicStepState.disabled,
+              child: _buildVerticalHeader(i),
+            )
+          else
+            _buildVerticalHeader(i),
+          _buildVerticalBody(i),
+        ],
+      ),
     );
   }
 
   Widget _buildHorizontal() {
     final List<Widget> children = <Widget>[
-      for (int i = 0; i < widget.steps.length; i += 1) ...<Widget>[
+      for (int i = 0; i < _steps.length; i += 1) ...<Widget>[
         InkResponse(
-          onTap: widget.steps[i].state != DynamicStepState.disabled
+          onTap: _steps[i].state != DynamicStepState.disabled
               ? () {
                   widget.onStepTapped?.call(i);
                 }
               : null,
-          canRequestFocus: widget.steps[i].state != DynamicStepState.disabled,
+          canRequestFocus: _steps[i].state != DynamicStepState.disabled,
           child: Row(
             children: <Widget>[
               SizedBox(
@@ -812,12 +935,12 @@ class _DynamicStepperState extends State<DynamicStepper>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    if (widget.steps[i].label != null)
+                    if (_steps[i].label != null)
                       const SizedBox(
                         height: 24.0,
                       ),
                     Center(child: _buildIcon(i)),
-                    if (widget.steps[i].label != null)
+                    if (_steps[i].label != null)
                       SizedBox(
                         height: 24.0,
                         child: _buildLabelText(i),
@@ -844,12 +967,12 @@ class _DynamicStepperState extends State<DynamicStepper>
     ];
 
     final List<Widget> stepPanels = <Widget>[];
-    for (int i = 0; i < widget.steps.length; i += 1) {
+    for (int i = 0; i < _steps.length; i += 1) {
       stepPanels.add(
         Visibility(
           maintainState: true,
-          visible: i == widget.currentStep,
-          child: widget.steps[i].content,
+          visible: i == _currentStep,
+          child: _steps[i].content ?? const SizedBox(),
         ),
       );
     }
@@ -877,7 +1000,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: stepPanels),
               ),
-              _buildVerticalControls(widget.currentStep),
+              _buildVerticalControls(_currentStep),
             ],
           ),
         ),

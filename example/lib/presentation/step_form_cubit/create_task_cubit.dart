@@ -82,9 +82,15 @@ class CreateTaskCubit extends Cubit<CreateTaskState> {
         hasInvalidStep = true;
         return step.copyWith(
           titleField: step.titleField?.copyWith(
-              errorMessage: _getTitleErrorText(step.titleField?.value ?? '')),
+            errorMessage: _getTitleErrorText(
+              step.titleField?.value ?? '',
+            ),
+          ),
           timerField: step.timerField?.copyWith(
-              errorMessage: _getTimerErrorText(step.timerField?.value ?? '')),
+            errorMessage: _getTimerErrorText(
+              step.timerField?.value ?? '',
+            ),
+          ),
         );
       } else {
         hasInvalidStep = false;
