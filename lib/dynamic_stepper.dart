@@ -346,7 +346,7 @@ class DynamicStepper extends StatefulWidget {
 
 class _DynamicStepperState extends State<DynamicStepper>
     with TickerProviderStateMixin {
-  late List<GlobalKey> _keys;
+  //late List<GlobalKey> _keys;
   final Map<int, DynamicStepState> _oldStates = <int, DynamicStepState>{};
   late List<DynamicStep> _steps;
   late int _currentStep;
@@ -356,14 +356,14 @@ class _DynamicStepperState extends State<DynamicStepper>
     super.initState();
     _steps = widget.steps;
     _currentStep = widget.currentStep;
-    _keys = List<GlobalKey>.generate(
-      _steps.length,
-      (int i) => GlobalKey(),
-    );
-
-    for (int i = 0; i < _steps.length; i += 1) {
-      _oldStates[i] = _steps[i].state;
-    }
+    // _keys = List<GlobalKey>.generate(
+    //   _steps.length,
+    //   (int i) => GlobalKey(),
+    // );
+    //
+    // for (int i = 0; i < _steps.length; i += 1) {
+    //   _oldStates[i] = _steps[i].state;
+    // }
   }
 
   @override
@@ -830,7 +830,6 @@ class _DynamicStepperState extends State<DynamicStepper>
       physics: widget.physics,
       itemCount: _steps.length,
       itemBuilder: (context, i) {
-        i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
         if (widget.enableSwipeAction) {
           return Slidable(
             enabled: !_isLast(i) && !_isFirst(i),
@@ -892,25 +891,25 @@ class _DynamicStepperState extends State<DynamicStepper>
       color: Colors.white60,
       child: Stack(
         children: <Widget>[
-          if (_steps[i].title != null)
-            InkWell(
-              onTap: _steps[i].state != DynamicStepState.disabled
-                  ? () {
-                      // In the vertical case we need to scroll to the newly tapped
-                      // step.
-                      Scrollable.ensureVisible(
-                        _keys[i].currentContext!,
-                        curve: Curves.fastOutSlowIn,
-                        duration: kThemeAnimationDuration,
-                      );
-
-                      widget.onStepTapped?.call(i);
-                    }
-                  : null,
-              canRequestFocus: _steps[i].state != DynamicStepState.disabled,
-              child: _buildVerticalHeader(i),
-            )
-          else
+          // if (_steps[i].title != null)
+          //   InkWell(
+          //     onTap: _steps[i].state != DynamicStepState.disabled
+          //         ? () {
+          //             // In the vertical case we need to scroll to the newly tapped
+          //             // step.
+          //             Scrollable.ensureVisible(
+          //               _keys[i].currentContext!,
+          //               curve: Curves.fastOutSlowIn,
+          //               duration: kThemeAnimationDuration,
+          //             );
+          //
+          //             widget.onStepTapped?.call(i);
+          //           }
+          //         : null,
+          //     canRequestFocus: _steps[i].state != DynamicStepState.disabled,
+          //     child: _buildVerticalHeader(i),
+          //   )
+          // else
             _buildVerticalHeader(i),
           _buildVerticalBody(i),
         ],
