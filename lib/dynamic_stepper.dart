@@ -805,6 +805,7 @@ class _DynamicStepperState extends State<DynamicStepper>
 
   Widget _buildVertical() {
     return ReorderableListView.builder(
+
       buildDefaultDragHandles: widget.buildDefaultDragHandles,
       onReorder: (int oldIndex, int newIndex) {
         if (oldIndex < newIndex) {
@@ -887,7 +888,7 @@ class _DynamicStepperState extends State<DynamicStepper>
 
   Container _stepperContentWidget(int i) {
     return Container(
-      key: ObjectKey(_steps[i]),
+      key: ValueKey(_steps[i]),
       color: Colors.white60,
       child: Stack(
         children: <Widget>[
