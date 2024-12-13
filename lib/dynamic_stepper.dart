@@ -816,13 +816,16 @@ class _DynamicStepperState extends State<DynamicStepper>
         if (_isLast(oldIndex) || _isLast(newIndex)) {
           return;
         }
-        setState(() {
-          final DynamicStep reorderedStep = _steps.removeAt(oldIndex);
+        Future.delayed(const Duration(milliseconds: 100), (){
+          setState(() {
+            final DynamicStep reorderedStep = _steps.removeAt(oldIndex);
 
-          _steps.insert(newIndex, reorderedStep);
-          _currentStep = newIndex;
-          widget.onStepDragged?.call(oldIndex, newIndex);
+            _steps.insert(newIndex, reorderedStep);
+            _currentStep = newIndex;
+            widget.onStepDragged?.call(oldIndex, newIndex);
+          });
         });
+
       },
       shrinkWrap: true,
       physics: widget.physics,
