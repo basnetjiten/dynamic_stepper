@@ -346,7 +346,7 @@ class DynamicStepper extends StatefulWidget {
 
 class _DynamicStepperState extends State<DynamicStepper>
     with TickerProviderStateMixin {
-  //late List<GlobalObjectKey> _keys;
+  late List<GlobalKey> _keys;
   final Map<int, DynamicStepState> _oldStates = <int, DynamicStepState>{};
   late List<DynamicStep> _steps;
   late int _currentStep;
@@ -356,7 +356,10 @@ class _DynamicStepperState extends State<DynamicStepper>
     super.initState();
     _steps = widget.steps;
     _currentStep = widget.currentStep;
-    // _keys = List<GlobalObjectKey>.generate(_steps.length, (int i) => GlobalObjectKey(UniqueKey()));
+    _keys = List<GlobalKey>.generate(
+      _steps.length,
+      (int i) => GlobalKey(),
+    );
 
     for (int i = 0; i < _steps.length; i += 1) {
       _oldStates[i] = _steps[i].state;
@@ -815,10 +818,8 @@ class _DynamicStepperState extends State<DynamicStepper>
         if (_isLast(oldIndex) || _isLast(newIndex)) {
           return;
         }
-
         setState(() {
           final DynamicStep reorderedStep = _steps.removeAt(oldIndex);
-
           _steps.insert(newIndex, reorderedStep);
           _currentStep = newIndex;
           widget.onStepDragged?.call(oldIndex, newIndex);
@@ -828,90 +829,91 @@ class _DynamicStepperState extends State<DynamicStepper>
       physics: widget.physics,
       itemCount: _steps.length,
       itemBuilder: (context, i) {
-        // i < _keys.length ? _keys[i] : _keys.add(GlobalObjectKey(UniqueKey()));
-        // if (widget.enableSwipeAction) {
-        return _createSlidable(i);
-        //  } else {
-        //  return _stepperContentWidget(i);
-        // }
+        i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
+        if (widget.enableSwipeAction) {
+          return Slidable(
+            enabled: !_isLast(i) && !_isFirst(i),
+            key: ObjectKey(_steps[i]),
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              children: [
+                SlidableAction(
+                  borderRadius: BorderRadius.circular(10),
+                  onPressed: (context) {
+                    widget.onStepDelete?.call(i);
+                  },
+                  foregroundColor: Colors.redAccent,
+                  icon: Icons.delete,
+                  label: 'Delete',
+                ),
+              ],
+            ),
+            child: Container(
+              color: Colors.white60,
+              child: Stack(
+                children: <Widget>[
+                  if (_steps[i].title != null)
+                    InkWell(
+                      onTap: _steps[i].state != DynamicStepState.disabled
+                          ? () {
+                              // In the vertical case we need to scroll to the newly tapped
+                              // step.
+                              Scrollable.ensureVisible(
+                                _keys[i].currentContext!,
+                                curve: Curves.fastOutSlowIn,
+                                duration: kThemeAnimationDuration,
+                              );
+
+                              widget.onStepTapped?.call(i);
+                            }
+                          : null,
+                      canRequestFocus:
+                          _steps[i].state != DynamicStepState.disabled,
+                      child: _buildVerticalHeader(i),
+                    )
+                  else
+                    _buildVerticalHeader(i),
+                  _buildVerticalBody(i),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return _stepperContentWidget(i);
+        }
       },
     );
   }
 
-  Slidable _createSlidable(int i) {
-    return Slidable(
-      key: _createKey(i),
-      enabled: !_isLast(i) && !_isFirst(i),
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            borderRadius: BorderRadius.circular(10),
-            onPressed: (context) {
-              widget.onStepDelete?.call(i);
-            },
-            foregroundColor: Colors.redAccent,
-            icon: Icons.delete,
-            label: 'Delete',
-          ),
-        ],
-      ),
+  Container _stepperContentWidget(int i) {
+    return Container(
+      key: ObjectKey(_steps[i]),
+      color: Colors.white60,
       child: Stack(
         children: <Widget>[
-          if (_steps[i].title != null)
-            InkWell(
-              onTap: _steps[i].state != DynamicStepState.disabled
-                  ? () {
-                      // // In the vertical case we need to scroll to the newly tapped
-                      // // step.
-                      // Scrollable.ensureVisible(
-                      //   _keys[i].currentContext!,
-                      //   curve: Curves.fastOutSlowIn,
-                      //   duration: kThemeAnimationDuration,
-                      // );
-                      //
-                      // widget.onStepTapped?.call(i);
-                    }
-                  : null,
-              canRequestFocus: _steps[i].state != DynamicStepState.disabled,
-              child: _buildVerticalHeader(i),
-            )
-          else
+          // if (_steps[i].title != null)
+          //   InkWell(
+          //     onTap: _steps[i].state != DynamicStepState.disabled
+          //         ? () {
+          //             // In the vertical case we need to scroll to the newly tapped
+          //             // step.
+          //             Scrollable.ensureVisible(
+          //               _keys[i].currentContext!,
+          //               curve: Curves.fastOutSlowIn,
+          //               duration: kThemeAnimationDuration,
+          //             );
+          //
+          //             widget.onStepTapped?.call(i);
+          //           }
+          //         : null,
+          //     canRequestFocus: _steps[i].state != DynamicStepState.disabled,
+          //     child: _buildVerticalHeader(i),
+          //   )
+          // else
             _buildVerticalHeader(i),
           _buildVerticalBody(i),
         ],
       ),
-    );
-  }
-
-  ObjectKey _createKey(int i) => ObjectKey(_steps[i]);
-
-  Widget _stepperContentWidget(int i) {
-    return Stack(
-      key: _createKey(i),
-      children: <Widget>[
-        if (_steps[i].title != null)
-          InkWell(
-            onTap: _steps[i].state != DynamicStepState.disabled
-                ? () {
-                    // In the vertical case we need to scroll to the newly tapped
-                    // step.
-                    // Scrollable.ensureVisible(
-                    //   _keys[i].currentContext!,
-                    //   curve: Curves.fastOutSlowIn,
-                    //   duration: kThemeAnimationDuration,
-                    // );
-                    //
-                    // widget.onStepTapped?.call(i);
-                  }
-                : null,
-            canRequestFocus: _steps[i].state != DynamicStepState.disabled,
-            child: _buildVerticalHeader(i),
-          )
-        else
-          _buildVerticalHeader(i),
-        _buildVerticalBody(i),
-      ],
     );
   }
 
