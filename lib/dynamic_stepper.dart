@@ -357,7 +357,7 @@ class _DynamicStepperState extends State<DynamicStepper>
     _steps = widget.steps;
     _currentStep = widget.currentStep;
     _keys = List<GlobalObjectKey>.generate(
-        _steps.length, (int i) => GlobalObjectKey(i));
+        _steps.length, (int i) => GlobalObjectKey(UniqueKey()));
 
     for (int i = 0; i < _steps.length; i += 1) {
       _oldStates[i] = _steps[i].state;
@@ -805,6 +805,8 @@ class _DynamicStepperState extends State<DynamicStepper>
     return ReorderableListView.builder(
       buildDefaultDragHandles: widget.buildDefaultDragHandles,
       onReorder: (int oldIndex, int newIndex) {
+
+
         if (oldIndex < newIndex) {
           newIndex -= 1;
         }
@@ -816,7 +818,7 @@ class _DynamicStepperState extends State<DynamicStepper>
         if (_isLast(oldIndex) || _isLast(newIndex)) {
           return;
         }
-        Future.delayed(const Duration(milliseconds: 100), (){
+        Future.delayed(const Duration(milliseconds: 20), (){
           setState(() {
             final DynamicStep reorderedStep = _steps.removeAt(oldIndex);
 
@@ -831,7 +833,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       physics: widget.physics,
       itemCount: _steps.length,
       itemBuilder: (context, i) {
-        i < _keys.length ? _keys[i] : _keys.add(GlobalObjectKey(i));
+        i < _keys.length ? _keys[i] : _keys.add(GlobalObjectKey(UniqueKey()));
         if (widget.enableSwipeAction) {
           return Slidable(
             key: GlobalObjectKey(_steps[i]),
