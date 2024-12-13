@@ -360,10 +360,10 @@ class _DynamicStepperState extends State<DynamicStepper>
     //   _steps.length,
     //   (int i) => GlobalKey(),
     // );
-    //
-    // for (int i = 0; i < _steps.length; i += 1) {
-    //   _oldStates[i] = _steps[i].state;
-    // }
+
+    for (int i = 0; i < _steps.length; i += 1) {
+      _oldStates[i] = _steps[i].state;
+    }
   }
 
   @override
