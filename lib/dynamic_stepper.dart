@@ -853,35 +853,35 @@ class _DynamicStepperState extends State<DynamicStepper>
               color: Colors.white60,
               child: Stack(
                 children: <Widget>[
-                  if (_steps[i].title != null)
-                    InkWell(
-                      onTap: _steps[i].state != DynamicStepState.disabled
-                          ? () {
-                              // In the vertical case we need to scroll to the newly tapped
-                              // step.
-                              Scrollable.ensureVisible(
-                                _keys[i].currentContext!,
-                                curve: Curves.fastOutSlowIn,
-                                duration: kThemeAnimationDuration,
-                              );
-
-                              widget.onStepTapped?.call(i);
-                            }
-                          : null,
-                      canRequestFocus:
-                          _steps[i].state != DynamicStepState.disabled,
-                      child: _buildVerticalHeader(i),
-                    )
-                  else
+                  // if (_steps[i].title != null)
+                  //   InkWell(
+                  //     onTap: _steps[i].state != DynamicStepState.disabled
+                  //         ? () {
+                  //             // In the vertical case we need to scroll to the newly tapped
+                  //             // step.
+                  //             Scrollable.ensureVisible(
+                  //               _keys[i].currentContext!,
+                  //               curve: Curves.fastOutSlowIn,
+                  //               duration: kThemeAnimationDuration,
+                  //             );
+                  //
+                  //             widget.onStepTapped?.call(i);
+                  //           }
+                  //         : null,
+                  //     canRequestFocus:
+                  //         _steps[i].state != DynamicStepState.disabled,
+                  //     child: _buildVerticalHeader(i),
+                  //   )
+                  // else
                     _buildVerticalHeader(i),
                   _buildVerticalBody(i),
                 ],
               ),
             ),
           );
+        } else {
+          return _stepperContentWidget(i);
         }
-
-        return _stepperContentWidget(i);
       },
     );
   }
