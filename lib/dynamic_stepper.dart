@@ -219,12 +219,15 @@ class DynamicStepper extends StatefulWidget {
     this.buildDefaultDragHandles = true,
     this.onStepDragged,
     this.lastWidget,
+    this.slidableCardHeight,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
   final bool buildDefaultDragHandles;
 
   final Widget? lastWidget;
+
+  final double? slidableCardHeight;
 
   /// Shows only title widget in the stepper
   final bool enableSwipeAction;
@@ -838,7 +841,7 @@ class _DynamicStepperState extends State<DynamicStepper>
             key: ObjectKey(_steps[i]),
             children: [
               SizedBox(
-                height: 450,
+                height: widget.slidableCardHeight ?? 450,
                 width: double.maxFinite,
                 child: Slidable(
                   //enabled: !_isLast(i) && !_isFirst(i),
