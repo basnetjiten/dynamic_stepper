@@ -217,7 +217,8 @@ class DynamicStepper extends StatefulWidget {
     this.actionIcon,
     this.onStepDelete,
     this.buildDefaultDragHandles = true,
-    this.onStepDragged, this.lastWidget,
+    this.onStepDragged,
+    this.lastWidget,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -833,62 +834,64 @@ class _DynamicStepperState extends State<DynamicStepper>
       itemBuilder: (context, i) {
         i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
         if (widget.enableSwipeAction) {
-          return Slidable(
-            //enabled: !_isLast(i) && !_isFirst(i),
-            enabled: !_isLast(i),
-            key: ObjectKey(_steps[i]),
-            endActionPane: ActionPane(
-              motion: const ScrollMotion(),
-              children: [
-                SlidableAction(
-                  borderRadius: BorderRadius.circular(10),
-                  onPressed: (context) {
-                    widget.onStepDelete?.call(i);
-                  },
-                  foregroundColor: Colors.redAccent,
-                  icon: Icons.delete,
-                  label: 'Delete',
-                ),
-              ],
-            ),
-            child: Container(
-              color: Colors.white60,
-              child: Stack(
-                children: <Widget>[
-                  if (_steps[i].title != null)
-                    InkWell(
-                      onTap: _steps[i].state != DynamicStepState.disabled
-                          ? () {
-                              // In the vertical case we need to scroll to the newly tapped
-                              // step.
-                              Scrollable.ensureVisible(
-                                _keys[i].currentContext!,
-                                curve: Curves.fastOutSlowIn,
-                                duration: kThemeAnimationDuration,
-                              );
+          return Column(
+            children: [
+              Expanded(
+                child: Slidable(
+                  //enabled: !_isLast(i) && !_isFirst(i),
+                  enabled: !_isLast(i),
+                  key: ObjectKey(_steps[i]),
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    children: [
+                      SlidableAction(
+                        borderRadius: BorderRadius.circular(10),
+                        onPressed: (context) {
+                          widget.onStepDelete?.call(i);
+                        },
+                        foregroundColor: Colors.redAccent,
+                        icon: Icons.delete,
+                        label: 'Delete',
+                      ),
+                    ],
+                  ),
+                  child: Container(
+                    color: Colors.white60,
+                    child: Stack(
+                      children: <Widget>[
+                        if (_steps[i].title != null)
+                          InkWell(
+                            onTap: _steps[i].state != DynamicStepState.disabled
+                                ? () {
+                                    // In the vertical case we need to scroll to the newly tapped
+                                    // step.
+                                    Scrollable.ensureVisible(
+                                      _keys[i].currentContext!,
+                                      curve: Curves.fastOutSlowIn,
+                                      duration: kThemeAnimationDuration,
+                                    );
 
-                              widget.onStepTapped?.call(i);
-                            }
-                          : null,
-                      canRequestFocus:
-                          _steps[i].state != DynamicStepState.disabled,
-                      child: _buildVerticalHeader(i),
-                    )
-                  else
-                    _buildVerticalHeader(i),
-                  _buildVerticalBody(i),
-                ],
+                                    widget.onStepTapped?.call(i);
+                                  }
+                                : null,
+                            canRequestFocus:
+                                _steps[i].state != DynamicStepState.disabled,
+                            child: _buildVerticalHeader(i),
+                          )
+                        else
+                          _buildVerticalHeader(i),
+                        _buildVerticalBody(i),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
+              if (_isLast(i)) ...[widget.lastWidget ?? const SizedBox.shrink()]
+            ],
           );
-        }
-        if(_isLast(i)){
-          return widget.lastWidget ?? const SizedBox.shrink();
-        }
-        else {
+        } else {
           return _stepperContentWidget(i);
         }
-
       },
     );
   }
