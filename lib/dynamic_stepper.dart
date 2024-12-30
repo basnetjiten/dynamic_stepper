@@ -837,7 +837,7 @@ class _DynamicStepperState extends State<DynamicStepper>
           return Column(
             key: ObjectKey(_steps[i]),
             children: [
-              Expanded(
+              Flexible(
                 child: Slidable(
                   //enabled: !_isLast(i) && !_isFirst(i),
                   enabled: !_isLast(i),
