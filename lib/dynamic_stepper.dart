@@ -892,7 +892,9 @@ class _DynamicStepperState extends State<DynamicStepper>
                   ),
                 ),
               ),
-              if (_isLast(i)) ...[widget.lastWidget ?? const SizedBox.shrink()]
+              if (_isLast(i) && widget.lastWidget != null) ...[
+                widget.lastWidget!
+              ]
             ],
           );
         } else {
