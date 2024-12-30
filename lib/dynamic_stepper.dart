@@ -217,11 +217,13 @@ class DynamicStepper extends StatefulWidget {
     this.actionIcon,
     this.onStepDelete,
     this.buildDefaultDragHandles = true,
-    this.onStepDragged,
+    this.onStepDragged, this.lastWidget,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
   final bool buildDefaultDragHandles;
+
+  final Widget? lastWidget;
 
   /// Shows only title widget in the stepper
   final bool enableSwipeAction;
@@ -879,9 +881,14 @@ class _DynamicStepperState extends State<DynamicStepper>
               ),
             ),
           );
-        } else {
+        }
+        if(_isLast(i)){
+          return widget.lastWidget ?? const SizedBox.shrink();
+        }
+        else {
           return _stepperContentWidget(i);
         }
+
       },
     );
   }
