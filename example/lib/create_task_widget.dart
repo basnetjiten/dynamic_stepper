@@ -152,6 +152,7 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
         children: [
           Expanded(
             child: DynamicStepperWidget(
+
               enableSwipeAction: true,
               showContent: true,
               steps: _steps,
@@ -171,7 +172,7 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
             onPressed: () {
               _createTaskCubit.saveSteps();
             },
-            child: const Text('Add Step'),
+            child: const Text('Addx xStep'),
           ),
           const SizedBox(
             height: 40,

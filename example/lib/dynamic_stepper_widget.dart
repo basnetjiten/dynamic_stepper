@@ -27,6 +27,11 @@ class DynamicStepperWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicStepper(
+      slidableCardHeight:300,
+      lastWidget: Padding(
+        padding: const EdgeInsets.only(top: 50),
+        child: TextButton(onPressed: (){}, child: Text('click')),
+      ),
       enableSwipeAction: enableSwipeAction,
       alwaysShowContent: showContent,
       actionIcon: actionIcon,
