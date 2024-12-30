@@ -837,7 +837,9 @@ class _DynamicStepperState extends State<DynamicStepper>
           return Column(
             key: ObjectKey(_steps[i]),
             children: [
-              Flexible(
+              SizedBox(
+                height: 450,
+                width: double.maxFinite,
                 child: Slidable(
                   //enabled: !_isLast(i) && !_isFirst(i),
                   enabled: !_isLast(i),
