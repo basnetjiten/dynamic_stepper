@@ -835,12 +835,13 @@ class _DynamicStepperState extends State<DynamicStepper>
         i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
         if (widget.enableSwipeAction) {
           return Column(
+            key: ObjectKey(_steps[i]),
             children: [
               Expanded(
                 child: Slidable(
                   //enabled: !_isLast(i) && !_isFirst(i),
                   enabled: !_isLast(i),
-                  key: ObjectKey(_steps[i]),
+
                   endActionPane: ActionPane(
                     motion: const ScrollMotion(),
                     children: [
