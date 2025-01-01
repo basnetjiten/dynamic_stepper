@@ -871,7 +871,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                   widget.toggleWidget!
                 ],
                 if (_isFirst(i) && widget.firstWidget != null) ...[
-                  widget.lastWidget!
+                  widget.firstWidget!
                 ],
                 Container(
                   color: Colors.white70,
