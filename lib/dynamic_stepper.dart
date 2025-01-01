@@ -867,11 +867,11 @@ class _DynamicStepperState extends State<DynamicStepper>
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (_isFirst(i) && widget.toggleWidget != null) ...[
-                  widget.toggleWidget!
-                ],
                 if (_isFirst(i) && widget.firstWidget != null) ...[
                   widget.firstWidget!
+                ],
+                if (_isFirst(i) && widget.toggleWidget != null) ...[
+                  widget.toggleWidget!
                 ],
                 Container(
                   color: Colors.white70,
