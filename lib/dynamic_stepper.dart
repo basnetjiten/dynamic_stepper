@@ -7,6 +7,7 @@
  * Credits: https://gist.github.com/sanket143/bf20a16775095e0be33b8a8156c34cb9
  */
 
+import 'package:dynamic_stepper/banner_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -220,12 +221,18 @@ class DynamicStepper extends StatefulWidget {
     this.onStepDragged,
     this.lastWidget,
     this.slidableCardHeight,
+    this.firstWidget,
+    this.toggleWidget,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
   final bool buildDefaultDragHandles;
 
   final Widget? lastWidget;
+
+  final Widget? firstWidget;
+
+  final Widget? toggleWidget;
 
   final double? slidableCardHeight;
 
@@ -856,41 +863,54 @@ class _DynamicStepperState extends State<DynamicStepper>
                 ),
               ],
             ),
-            child: Container(
-              color: Colors.white60,
-              child: Stack(
-                children: <Widget>[
-                  if (_steps[i].title != null)
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: _steps[i].state != DynamicStepState.disabled
-                              ? () {
-                                  // In the vertical case we need to scroll to the newly tapped
-                                  // step.
-                                  Scrollable.ensureVisible(
-                                    _keys[i].currentContext!,
-                                    curve: Curves.fastOutSlowIn,
-                                    duration: kThemeAnimationDuration,
-                                  );
-
-                                  widget.onStepTapped?.call(i);
-                                }
-                              : null,
-                          canRequestFocus:
-                              _steps[i].state != DynamicStepState.disabled,
-                          child: _buildVerticalHeader(i),
-                        ),
-                        if (_isLast(i) && widget.lastWidget != null) ...[
-                          widget.lastWidget!
-                        ]
-                      ],
-                    )
-                  else
-                    _buildVerticalHeader(i),
-                  _buildVerticalBody(i),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (_isFirst(i) && widget.toggleWidget != null) ...[
+                  widget.toggleWidget!
                 ],
-              ),
+                if (_isFirst(i) && widget.firstWidget != null) ...[
+                  widget.lastWidget!
+                ],
+                Container(
+                  color: Colors.white70,
+                  child: Stack(
+                    children: <Widget>[
+                      if (_steps[i].title != null)
+                        Column(
+                          children: [
+                            InkWell(
+                              onTap:
+                                  _steps[i].state != DynamicStepState.disabled
+                                      ? () {
+                                          // In the vertical case we need to scroll to the newly tapped
+                                          // step.
+                                          Scrollable.ensureVisible(
+                                            _keys[i].currentContext!,
+                                            curve: Curves.fastOutSlowIn,
+                                            duration: kThemeAnimationDuration,
+                                          );
+
+                                          widget.onStepTapped?.call(i);
+                                        }
+                                      : null,
+                              canRequestFocus:
+                                  _steps[i].state != DynamicStepState.disabled,
+                              child: _buildVerticalHeader(i),
+                            ),
+                            if (_isLast(i) && widget.lastWidget != null) ...[
+                              widget.lastWidget!
+                            ]
+                          ],
+                        )
+                      else
+                        _buildVerticalHeader(i),
+                      _buildVerticalBody(i),
+                    ],
+                  ),
+                ),
+              ],
             ),
           );
         } else {
