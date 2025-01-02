@@ -222,7 +222,7 @@ class DynamicStepper extends StatefulWidget {
     this.lastWidget,
     this.slidableCardHeight,
     this.firstWidget,
-    this.toggleWidget,
+    this.toggleWidget, this.backgroundColor,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -231,6 +231,8 @@ class DynamicStepper extends StatefulWidget {
   final Widget? lastWidget;
 
   final Widget? firstWidget;
+
+  final Color? backgroundColor;
 
   final Widget? toggleWidget;
 
@@ -871,7 +873,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                     ],
                   ),
                   child: Container(
-                    color: Colors.white70,
+                    color: widget.backgroundColor ?? Colors.white70,
                     child: Stack(
                       children: <Widget>[
                         if (_steps[i].title != null)
