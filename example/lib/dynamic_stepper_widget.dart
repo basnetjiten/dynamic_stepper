@@ -16,7 +16,7 @@ class DynamicStepperWidget extends StatelessWidget {
   final List<DynamicStep> steps;
 
   final ValueChanged<int>? onStepDeleted;
-  final Function(int,int)? onStepDragged;
+  final Function(int, int)? onStepDragged;
 
   final bool showContent;
   final bool enableSwipeAction;
@@ -27,10 +27,10 @@ class DynamicStepperWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicStepper(
-      slidableCardHeight:300,
+      physics: const NeverScrollableScrollPhysics(),
       lastWidget: Padding(
         padding: const EdgeInsets.only(top: 50),
-        child: TextButton(onPressed: (){}, child: Text('click')),
+        child: TextButton(onPressed: () {}, child: Text('click')),
       ),
       enableSwipeAction: enableSwipeAction,
       alwaysShowContent: showContent,
@@ -39,8 +39,20 @@ class DynamicStepperWidget extends StatelessWidget {
       buildDefaultDragHandles: enableDrag,
       steps: steps,
       currentStep: 0,
+      toggleWidget: Container(
+        height: 100,
+        width: 200,
+        color: Colors.green,
+      ),
+      firstWidget: Center(
+          child: Container(
+        height: 100,
+        width: 200,
+        color: Colors.yellow,
+      )),
       onStepDelete: (index) => onStepDeleted?.call(index),
-      onStepDragged: (oldIndex,newIndex) => onStepDragged?.call(oldIndex,newIndex),
+      onStepDragged: (oldIndex, newIndex) =>
+          onStepDragged?.call(oldIndex, newIndex),
       controlsBuilder: (context, details) => const SizedBox(),
     );
   }
