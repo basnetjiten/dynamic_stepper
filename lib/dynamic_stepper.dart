@@ -869,8 +869,9 @@ class _DynamicStepperState extends State<DynamicStepper>
                         onPressed: (context) {
                           widget.onStepDelete?.call(i);
                         },
-                        // foregroundColor: const Color(0XFFEB5757),
-                        //backgroundColor: const Color(0XFFEB5757),
+                        foregroundColor: Colors.transparent,
+                        backgroundColor:
+                            widget.backgroundColor ?? Colors.transparent,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
