@@ -8,6 +8,7 @@
  */
 
 import 'package:dynamic_stepper/banner_image_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -222,7 +223,8 @@ class DynamicStepper extends StatefulWidget {
     this.lastWidget,
     this.slidableCardHeight,
     this.firstWidget,
-    this.toggleWidget, this.backgroundColor,
+    this.toggleWidget,
+    this.backgroundColor,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -419,7 +421,7 @@ class _DynamicStepperState extends State<DynamicStepper>
     return Container(
       width: visible ? 1.0 : 0.0,
       height: 16.0,
-      color: Colors.grey.shade400,
+      color: const Color(0xFFCCCCCC),
     );
   }
 
@@ -859,16 +861,36 @@ class _DynamicStepperState extends State<DynamicStepper>
                   enabled: !_isLast(i),
 
                   endActionPane: ActionPane(
+                    dragDismissible: false,
                     motion: const ScrollMotion(),
                     children: [
-                      SlidableAction(
-                        borderRadius: BorderRadius.circular(10),
+                      CustomSlidableAction(
+                        padding: EdgeInsets.zero,
                         onPressed: (context) {
                           widget.onStepDelete?.call(i);
                         },
-                        foregroundColor: Colors.redAccent,
-                        icon: Icons.delete,
-                        label: 'Delete',
+                        // foregroundColor: const Color(0XFFEB5757),
+                        //backgroundColor: const Color(0XFFEB5757),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              CupertinoIcons.delete,
+                              color: Color(0XFFEB5757),
+                              size: 30,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Delete',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: const Color(0XFFEB5757)),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
