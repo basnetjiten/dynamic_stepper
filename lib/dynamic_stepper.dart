@@ -844,12 +844,14 @@ class _DynamicStepperState extends State<DynamicStepper>
                   newIndex -= 1;
                 }
 
-                if (_isLast(newIndex)) {
-                  return;
-                }
+                if (!widget.dragLastWidget) {
+                  if (_isLast(newIndex)) {
+                    return;
+                  }
 
-                if (_isLast(oldIndex) || _isLast(newIndex)) {
-                  return;
+                  if (_isLast(oldIndex) || _isLast(newIndex)) {
+                    return;
+                  }
                 }
                 setState(() {
                   final DynamicStep reorderedStep = _steps.removeAt(oldIndex);
@@ -865,11 +867,9 @@ class _DynamicStepperState extends State<DynamicStepper>
                   if (widget.enableSwipeAction) {
                     return Slidable(
                       key: ObjectKey(_steps[i]),
-                      //enabled: !_isLast(i) && !_isFirst(i),
                       enabled: widget.dragLastWidget
                           ? widget.dragLastWidget
                           : !_isLast(i),
-
                       endActionPane: ActionPane(
                         dragDismissible: false,
                         motion: const ScrollMotion(),

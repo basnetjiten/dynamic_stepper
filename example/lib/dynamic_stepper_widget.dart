@@ -27,6 +27,7 @@ class DynamicStepperWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicStepper(
+      dragLastWidget: true,
       physics: const NeverScrollableScrollPhysics(),
       lastWidget: Padding(
         padding: const EdgeInsets.only(top: 50),
