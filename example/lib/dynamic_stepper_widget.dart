@@ -30,7 +30,7 @@ class DynamicStepperWidget extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       lastWidget: Padding(
         padding: const EdgeInsets.only(top: 50),
-        child: TextButton(onPressed: () {}, child: Text('click')),
+        child: TextButton(onPressed: () {}, child: const Text('click')),
       ),
       enableSwipeAction: enableSwipeAction,
       alwaysShowContent: showContent,

@@ -33,6 +33,7 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
   // Create a DynamicStep widget
   DynamicStep _createStep({required bool isAddButton}) {
     return DynamicStep(
+
       isActive: true,
       state: isAddButton ? DynamicStepState.action : DynamicStepState.indexed,
       title: isAddButton

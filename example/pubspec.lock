@@ -559,6 +559,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  reorderables:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "28e9289be4bf1af20001daddea8cd25429d93999"
+      url: "https://github.com/basnetjiten/reorderables.git"
+    source: git
+    version: "0.6.0"
   shelf:
     dependency: transitive
     description:
