@@ -832,6 +832,7 @@ class _DynamicStepperState extends State<DynamicStepper>
           if (widget.firstWidget != null) ...[widget.firstWidget!],
           if (widget.toggleWidget != null) ...[widget.toggleWidget!],
           ReorderableListView.builder(
+            autoScrollerVelocityScalar:150,
             buildDefaultDragHandles: widget.buildDefaultDragHandles,
             shrinkWrap: true,
             physics: widget.physics,
