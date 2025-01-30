@@ -1108,7 +1108,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       key: ObjectKey(_steps[i]),
       index: i,
       child: Container(
-        color: Colors.white60,
+        color: widget.backgroundColor ?? Colors.white60,
         child: Stack(
           children: <Widget>[
             // if (_steps[i].title != null)
