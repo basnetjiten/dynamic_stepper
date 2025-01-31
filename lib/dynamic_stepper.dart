@@ -835,149 +835,135 @@ class _DynamicStepperState extends State<DynamicStepper>
     return RefreshIndicator(
       notificationPredicate: widget.enableRefresh ? (_) => true : (_) => false,
       onRefresh: widget.onRefresh ?? () async {},
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification) {
-          if (scrollNotification is OverscrollNotification ||
-              scrollNotification is ScrollUpdateNotification) {
-            setState(() {
-              _isDragging = true;
-            });
-          } else if (scrollNotification is ScrollEndNotification) {
-            setState(() {
-              _isDragging = false;
-            });
-          }
-          return false;
+      child: NestedScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            if (widget.firstWidget != null)
+              SliverToBoxAdapter(
+                  child: Align(
+                alignment: Alignment.topCenter,
+                child: widget.firstWidget!,
+              )),
+            if (widget.toggleWidget != null)
+              SliverToBoxAdapter(
+                  child: Align(
+                      alignment: Alignment.topRight,
+                      child: widget.toggleWidget!)),
+          ];
         },
-        child: NestedScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              if (widget.firstWidget != null)
-                SliverToBoxAdapter(
-                    child: Align(
-                  alignment: Alignment.topCenter,
-                  child: widget.firstWidget!,
-                )),
-              if (widget.toggleWidget != null)
-                SliverToBoxAdapter(
-                    child: Align(
-                        alignment: Alignment.topRight,
-                        child: widget.toggleWidget!)),
-            ];
+        body: ReorderableListView.builder(
+         // keyboardDismissBehavior:  ScrollViewKeyboardDismissBehavior.onDrag,
+          physics:
+               const AlwaysScrollableScrollPhysics(),
+              //: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles: widget.buildDefaultDragHandles,
+          autoScrollerVelocityScalar: 100,
+          shrinkWrap: true,
+          onReorder: (int oldIndex, int newIndex) {
+            // Adjust newIndex for the ReorderableListView's index shift
+
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+
+            if (!widget.dragLastWidget) {
+              if (_isLast(newIndex)) {
+                return;
+              }
+
+              if (_isLast(oldIndex) || _isLast(newIndex)) {
+                return;
+              }
+            }
+
+            // Reorder items
+            setState(() {
+              final DynamicStep reorderedStep = _steps.removeAt(oldIndex);
+              _steps.insert(newIndex, reorderedStep);
+              _currentStep = newIndex;
+            });
+
+            // Notify parent widget if a drag event occurred
+            widget.onStepDragged?.call(oldIndex, newIndex);
           },
-          body: ReorderableListView.builder(
-            physics: _isDragging
-                ? const AlwaysScrollableScrollPhysics()
-                : const NeverScrollableScrollPhysics(),
-            buildDefaultDragHandles: widget.buildDefaultDragHandles,
-            autoScrollerVelocityScalar: 100,
-            shrinkWrap: true,
-            onReorder: (int oldIndex, int newIndex) {
-              // Adjust newIndex for the ReorderableListView's index shift
-
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
-
-              if (!widget.dragLastWidget) {
-                if (_isLast(newIndex)) {
-                  return;
-                }
-
-                if (_isLast(oldIndex) || _isLast(newIndex)) {
-                  return;
-                }
-              }
-
-              // Reorder items
-              setState(() {
-                final DynamicStep reorderedStep = _steps.removeAt(oldIndex);
-                _steps.insert(newIndex, reorderedStep);
-                _currentStep = newIndex;
-              });
-
-              // Notify parent widget if a drag event occurred
-              widget.onStepDragged?.call(oldIndex, newIndex);
-            },
-            itemCount: _steps.length,
-            itemBuilder: (BuildContext context, int i) {
-              i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
-              if (widget.enableSwipeAction) {
-                return CustomDragStartListener(
-                  index: i,
-                  key: ObjectKey(_steps[i]),
-                  child: Slidable(
-                    enabled: widget.dragLastWidget
-                        ? widget.dragLastWidget
-                        : !_isLast(i),
-                    endActionPane: ActionPane(
-                      dragDismissible: false,
-                      motion: const ScrollMotion(),
-                      children: [
-                        CustomSlidableAction(
-                          padding: EdgeInsets.zero,
-                          onPressed: (context) => widget.onStepDelete?.call(i),
-                          foregroundColor: Colors.transparent,
-                          backgroundColor:
-                              widget.backgroundColor ?? Colors.transparent,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(CupertinoIcons.delete,
-                                  color: Color(0XFFEB5757), size: 30),
-                              const SizedBox(height: 10),
-                              Text('Delete',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          color: const Color(0XFFEB5757))),
-                            ],
-                          ),
+          itemCount: _steps.length,
+          itemBuilder: (BuildContext context, int i) {
+            i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
+            if (widget.enableSwipeAction) {
+              return CustomDragStartListener(
+                index: i,
+                key: ObjectKey(_steps[i]),
+                child: Slidable(
+                  enabled: widget.dragLastWidget
+                      ? widget.dragLastWidget
+                      : !_isLast(i),
+                  endActionPane: ActionPane(
+                    dragDismissible: false,
+                    motion: const ScrollMotion(),
+                    children: [
+                      CustomSlidableAction(
+                        padding: EdgeInsets.zero,
+                        onPressed: (context) => widget.onStepDelete?.call(i),
+                        foregroundColor: Colors.transparent,
+                        backgroundColor:
+                            widget.backgroundColor ?? Colors.transparent,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(CupertinoIcons.delete,
+                                color: Color(0XFFEB5757), size: 30),
+                            const SizedBox(height: 10),
+                            Text('Delete',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                        color: const Color(0XFFEB5757))),
+                          ],
                         ),
+                      ),
+                    ],
+                  ),
+                  child: Container(
+                    color: widget.backgroundColor ?? Colors.white70,
+                    child: Stack(
+                      children: <Widget>[
+                        if (_steps[i].title != null)
+                          Column(
+                            children: [
+                              InkWell(
+                                onTap: _steps[i].state !=
+                                        DynamicStepState.disabled
+                                    ? () {
+                                        Scrollable.ensureVisible(
+                                          _keys[i].currentContext!,
+                                          curve: Curves.fastOutSlowIn,
+                                          duration: kThemeAnimationDuration,
+                                        );
+                                        widget.onStepTapped?.call(i);
+                                      }
+                                    : null,
+                                canRequestFocus: _steps[i].state !=
+                                    DynamicStepState.disabled,
+                                child: _buildVerticalHeader(i),
+                              ),
+                              if (_isLast(i) && widget.lastWidget != null)
+                                widget.lastWidget!,
+                            ],
+                          )
+                        else
+                          _buildVerticalHeader(i),
+                        _buildVerticalBody(i),
                       ],
                     ),
-                    child: Container(
-                      color: widget.backgroundColor ?? Colors.white70,
-                      child: Stack(
-                        children: <Widget>[
-                          if (_steps[i].title != null)
-                            Column(
-                              children: [
-                                InkWell(
-                                  onTap: _steps[i].state !=
-                                          DynamicStepState.disabled
-                                      ? () {
-                                          Scrollable.ensureVisible(
-                                            _keys[i].currentContext!,
-                                            curve: Curves.fastOutSlowIn,
-                                            duration: kThemeAnimationDuration,
-                                          );
-                                          widget.onStepTapped?.call(i);
-                                        }
-                                      : null,
-                                  canRequestFocus: _steps[i].state !=
-                                      DynamicStepState.disabled,
-                                  child: _buildVerticalHeader(i),
-                                ),
-                                if (_isLast(i) && widget.lastWidget != null)
-                                  widget.lastWidget!,
-                              ],
-                            )
-                          else
-                            _buildVerticalHeader(i),
-                          _buildVerticalBody(i),
-                        ],
-                      ),
-                    ),
                   ),
-                );
-              } else {
-                return _stepperContentWidget(i);
-              }
-            },
-          ),
+                ),
+              );
+            } else {
+              return _stepperContentWidget(i);
+            }
+          },
         ),
       ),
     );

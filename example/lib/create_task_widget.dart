@@ -76,7 +76,7 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: Column(
           children: [
-            _buildStepImage(),
+           // _buildStepImage(),
             _buildTitleField(index),
             _buildTimerField(index),
           ],
@@ -169,18 +169,18 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
               onStepDragged: _createTaskCubit.onStepDragged,
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          TextButton(
-            onPressed: () {
-              _createTaskCubit.saveSteps();
-            },
-            child: const Text('Addx xStep'),
-          ),
-          const SizedBox(
-            height: 40,
-          )
+          // const SizedBox(
+          //   height: 10,
+          // ),
+          // TextButton(
+          //   onPressed: () {
+          //     _createTaskCubit.saveSteps();
+          //   },
+          //   child: const Text('Addx xStep'),
+          // ),
+          // const SizedBox(
+          //   height: 40,
+          // )
         ],
       ),
     );
