@@ -871,7 +871,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                 ? const AlwaysScrollableScrollPhysics()
                 : const NeverScrollableScrollPhysics(),
             buildDefaultDragHandles: widget.buildDefaultDragHandles,
-            autoScrollerVelocityScalar: 80,
+            autoScrollerVelocityScalar: 100,
             shrinkWrap: true,
             onReorder: (int oldIndex, int newIndex) {
               // Adjust newIndex for the ReorderableListView's index shift
