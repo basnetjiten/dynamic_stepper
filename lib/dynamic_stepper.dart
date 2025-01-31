@@ -7,7 +7,6 @@
  * Credits: https://gist.github.com/sanket143/bf20a16775095e0be33b8a8156c34cb9
  */
 
-import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
 
 import 'package:dynamic_stepper/custom_drag_listener.dart';
 import 'package:flutter/cupertino.dart';
