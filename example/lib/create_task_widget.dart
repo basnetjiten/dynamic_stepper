@@ -104,13 +104,15 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
       bloc: _createTaskCubit,
       selector: (state) => state.steps[index]?.titleField,
       builder: (context, titleField) {
-        return CustomFormField(
-          initialValue: titleField?.value,
-          hintText: 'Title for Step $index',
-          onChanged: (title) {
-            _createTaskCubit.onStepFormChanged(index: index, title: title);
-          },
-          errorText: titleField?.errorMessage,
+        return Material(
+          child: CustomFormField(
+            initialValue: titleField?.value,
+            hintText: 'Title for Step $index',
+            onChanged: (title) {
+              _createTaskCubit.onStepFormChanged(index: index, title: title);
+            },
+            errorText: titleField?.errorMessage,
+          ),
         );
       },
     );
@@ -122,13 +124,15 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
       bloc: _createTaskCubit,
       selector: (state) => state.steps[index]?.timerField,
       builder: (context, timerField) {
-        return CustomFormField(
-          initialValue: timerField?.value,
-          hintText: 'Timer for Step $index',
-          onChanged: (timer) {
-            _createTaskCubit.onStepFormChanged(index: index, timer: timer);
-          },
-          errorText: timerField?.errorMessage,
+        return Material(
+          child: CustomFormField(
+            initialValue: timerField?.value,
+            hintText: 'Timer for Step $index',
+            onChanged: (timer) {
+              _createTaskCubit.onStepFormChanged(index: index, timer: timer);
+            },
+            errorText: timerField?.errorMessage,
+          ),
         );
       },
     );
