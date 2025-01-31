@@ -826,7 +826,7 @@ class _DynamicStepperState extends State<DynamicStepper>
   Widget _buildVertical() {
     return CustomScrollView(
       shrinkWrap: true,
-      physics: AlwaysScrollableScrollPhysics(),
+      physics: widget.physics,
       slivers: [
         if (widget.firstWidget != null)
           SliverToBoxAdapter(child: widget.firstWidget!),
