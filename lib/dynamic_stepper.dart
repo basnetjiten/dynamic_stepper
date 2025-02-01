@@ -843,14 +843,15 @@ class _DynamicStepperState extends State<DynamicStepper>
           if (widget.toggleWidget != null)
             SliverToBoxAdapter(
               child: Align(
-                  alignment: Alignment.centerRight,
-                  child: widget.toggleWidget!),
+                alignment: Alignment.centerRight,
+                child: widget.toggleWidget!,
+              ),
             ),
           SliverReorderableList(
+            autoScrollerVelocityScalar: 100,
             itemCount: _steps.length,
             onReorder: (int oldIndex, int newIndex) {
               // Adjust newIndex for the ReorderableListView's index shift
-
               if (oldIndex < newIndex) {
                 newIndex -= 1;
               }
@@ -914,7 +915,8 @@ class _DynamicStepperState extends State<DynamicStepper>
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
-                                      ?.copyWith(color: const Color(0XFFEB5757)),
+                                      ?.copyWith(
+                                          color: const Color(0XFFEB5757)),
                                 ),
                               ],
                             ),
