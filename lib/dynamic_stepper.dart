@@ -7,6 +7,8 @@
  * Credits: https://gist.github.com/sanket143/bf20a16775095e0be33b8a8156c34cb9
  */
 
+import 'dart:ui';
+
 import 'package:dynamic_stepper/custom_drag_listener.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -847,33 +849,53 @@ class _DynamicStepperState extends State<DynamicStepper>
                 child: widget.toggleWidget!,
               ),
             ),
-          SliverFillRemaining(
-            child: ReorderableListView.builder(
-                itemCount: _steps.length,
-                onReorder: (int oldIndex, int newIndex) {
-                  // Adjust newIndex for the ReorderableListView's index shift
-                  if (oldIndex < newIndex) newIndex--;
+          SliverReorderableList(
+              proxyDecorator: (child, index, animation) {
+                return _proxyDecoratorBuilder(
+                  animation,
+                  child,
+                );
+              },
+              itemCount: _steps.length,
+              onReorder: (int oldIndex, int newIndex) {
+                // Adjust newIndex for the ReorderableListView's index shift
+                if (oldIndex < newIndex) newIndex--;
 
-                  if (!widget.dragLastWidget &&
-                      (_isLast(oldIndex) || _isLast(newIndex))) {
-                    return;
-                  }
+                if (!widget.dragLastWidget &&
+                    (_isLast(oldIndex) || _isLast(newIndex))) {
+                  return;
+                }
 
-                  // Reorder items
-                  setState(() {
-                    _steps.insert(newIndex, _steps.removeAt(oldIndex));
-                    _currentStep = newIndex;
-                  });
+                // Reorder items
+                setState(() {
+                  _steps.insert(newIndex, _steps.removeAt(oldIndex));
+                  _currentStep = newIndex;
+                });
 
-                  // Notify parent widget if a drag event occurred
-                  widget.onStepDragged?.call(oldIndex, newIndex);
-                },
-                itemBuilder: (BuildContext context, int i) {
-                  return buildReorderableItem(i);
-                }),
-          )
+                // Notify parent widget if a drag event occurred
+                widget.onStepDragged?.call(oldIndex, newIndex);
+              },
+              itemBuilder: (BuildContext context, int i) {
+                return buildReorderableItem(i);
+              })
         ],
       ),
+    );
+  }
+
+  AnimatedBuilder _proxyDecoratorBuilder(
+      Animation<double> animation, Widget child) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (BuildContext context, Widget? child) {
+        final double animValue = Curves.easeInOut.transform(animation.value);
+        final double elevation = lerpDouble(0, 6, animValue)!;
+        return Material(
+          elevation: elevation,
+          child: child,
+        );
+      },
+      child: child,
     );
   }
 
