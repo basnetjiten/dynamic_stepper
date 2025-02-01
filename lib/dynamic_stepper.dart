@@ -837,6 +837,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       notificationPredicate: widget.enableRefresh ? (_) => true : (_) => false,
       onRefresh: widget.onRefresh ?? () async {},
       child: CustomScrollView(
+        physics: widget.physics,
         slivers: [
           if (widget.firstWidget != null)
             SliverToBoxAdapter(
