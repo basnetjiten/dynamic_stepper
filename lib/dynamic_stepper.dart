@@ -848,7 +848,7 @@ class _DynamicStepperState extends State<DynamicStepper>
               ),
             ),
           SliverReorderableList(
-              autoScrollerVelocityScalar: 100,
+              autoScrollerVelocityScalar: 80,
               itemCount: _steps.length,
               onReorder: (int oldIndex, int newIndex) {
                 // Adjust newIndex for the ReorderableListView's index shift
