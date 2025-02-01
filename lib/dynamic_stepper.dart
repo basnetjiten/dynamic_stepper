@@ -878,85 +878,87 @@ class _DynamicStepperState extends State<DynamicStepper>
             itemBuilder: (BuildContext context, int i) {
               i < _keys.length ? _keys[i] : _keys.add(GlobalKey());
               if (widget.enableSwipeAction) {
-                return CustomDragStartListener(
+                return Material(
                   key: ObjectKey(_steps[i]),
-                  index: i,
-                  child: Slidable(
-                    enabled: widget.dragLastWidget
-                        ? widget.dragLastWidget
-                        : !_isLast(i),
-                    endActionPane: ActionPane(
-                      dragDismissible: false,
-                      motion: const ScrollMotion(),
-                      children: [
-                        CustomSlidableAction(
-                          padding: EdgeInsets.zero,
-                          onPressed: (context) {
-                            widget.onStepDelete?.call(i);
-                          },
-                          foregroundColor: Colors.transparent,
-                          backgroundColor:
-                              widget.backgroundColor ?? Colors.transparent,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                CupertinoIcons.delete,
-                                color: Color(0XFFEB5757),
-                                size: 30,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Delete',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(color: const Color(0XFFEB5757)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    child: Container(
-                      color: widget.backgroundColor ?? Colors.white70,
-                      child: Stack(
-                        children: <Widget>[
-                          if (_steps[i].title != null)
-                            Column(
+                  child: CustomDragStartListener(
+                    index: i,
+                    child: Slidable(
+                      enabled: widget.dragLastWidget
+                          ? widget.dragLastWidget
+                          : !_isLast(i),
+                      endActionPane: ActionPane(
+                        dragDismissible: false,
+                        motion: const ScrollMotion(),
+                        children: [
+                          CustomSlidableAction(
+                            padding: EdgeInsets.zero,
+                            onPressed: (context) {
+                              widget.onStepDelete?.call(i);
+                            },
+                            foregroundColor: Colors.transparent,
+                            backgroundColor:
+                                widget.backgroundColor ?? Colors.transparent,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                InkWell(
-                                  onTap: _steps[i].state !=
-                                          DynamicStepState.disabled
-                                      ? () {
-                                          // // In the vertical case we need to scroll to the newly tapped
-                                          // // step.
-                                          // Scrollable.ensureVisible(
-                                          //   _keys[i].currentContext!,
-                                          //   curve: Curves.fastOutSlowIn,
-                                          //   duration:
-                                          //       kThemeAnimationDuration,
-                                          // );
-
-                                          widget.onStepTapped?.call(i);
-                                        }
-                                      : null,
-                                  canRequestFocus: _steps[i].state !=
-                                      DynamicStepState.disabled,
-                                  child: _buildVerticalHeader(i),
+                                const Icon(
+                                  CupertinoIcons.delete,
+                                  color: Color(0XFFEB5757),
+                                  size: 30,
                                 ),
-                                if (_isLast(i) &&
-                                    widget.lastWidget != null) ...[
-                                  widget.lastWidget!
-                                ]
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  'Delete',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: const Color(0XFFEB5757)),
+                                ),
                               ],
-                            )
-                          else
-                            _buildVerticalHeader(i),
-                          _buildVerticalBody(i),
+                            ),
+                          ),
                         ],
+                      ),
+                      child: Container(
+                        color: widget.backgroundColor ?? Colors.white70,
+                        child: Stack(
+                          children: <Widget>[
+                            if (_steps[i].title != null)
+                              Column(
+                                children: [
+                                  InkWell(
+                                    onTap: _steps[i].state !=
+                                            DynamicStepState.disabled
+                                        ? () {
+                                            // // In the vertical case we need to scroll to the newly tapped
+                                            // // step.
+                                            // Scrollable.ensureVisible(
+                                            //   _keys[i].currentContext!,
+                                            //   curve: Curves.fastOutSlowIn,
+                                            //   duration:
+                                            //       kThemeAnimationDuration,
+                                            // );
+
+                                            widget.onStepTapped?.call(i);
+                                          }
+                                        : null,
+                                    canRequestFocus: _steps[i].state !=
+                                        DynamicStepState.disabled,
+                                    child: _buildVerticalHeader(i),
+                                  ),
+                                  if (_isLast(i) &&
+                                      widget.lastWidget != null) ...[
+                                    widget.lastWidget!
+                                  ]
+                                ],
+                              )
+                            else
+                              _buildVerticalHeader(i),
+                            _buildVerticalBody(i),
+                          ],
+                        ),
                       ),
                     ),
                   ),
