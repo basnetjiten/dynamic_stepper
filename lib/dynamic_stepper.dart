@@ -847,30 +847,31 @@ class _DynamicStepperState extends State<DynamicStepper>
                 child: widget.toggleWidget!,
               ),
             ),
-          SliverReorderableList(
-              autoScrollerVelocityScalar: 80,
-              itemCount: _steps.length,
-              onReorder: (int oldIndex, int newIndex) {
-                // Adjust newIndex for the ReorderableListView's index shift
-                if (oldIndex < newIndex) newIndex--;
+          SliverFillRemaining(
+            child: ReorderableListView.builder(
+                itemCount: _steps.length,
+                onReorder: (int oldIndex, int newIndex) {
+                  // Adjust newIndex for the ReorderableListView's index shift
+                  if (oldIndex < newIndex) newIndex--;
 
-                if (!widget.dragLastWidget &&
-                    (_isLast(oldIndex) || _isLast(newIndex))) {
-                  return;
-                }
+                  if (!widget.dragLastWidget &&
+                      (_isLast(oldIndex) || _isLast(newIndex))) {
+                    return;
+                  }
 
-                // Reorder items
-                setState(() {
-                  _steps.insert(newIndex, _steps.removeAt(oldIndex));
-                  _currentStep = newIndex;
-                });
+                  // Reorder items
+                  setState(() {
+                    _steps.insert(newIndex, _steps.removeAt(oldIndex));
+                    _currentStep = newIndex;
+                  });
 
-                // Notify parent widget if a drag event occurred
-                widget.onStepDragged?.call(oldIndex, newIndex);
-              },
-              itemBuilder: (BuildContext context, int i) {
-                return buildReorderableItem(i);
-              })
+                  // Notify parent widget if a drag event occurred
+                  widget.onStepDragged?.call(oldIndex, newIndex);
+                },
+                itemBuilder: (BuildContext context, int i) {
+                  return buildReorderableItem(i);
+                }),
+          )
         ],
       ),
     );
