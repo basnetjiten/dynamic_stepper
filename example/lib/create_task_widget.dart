@@ -142,6 +142,7 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Dynamic Stepper'),
         actions: [
