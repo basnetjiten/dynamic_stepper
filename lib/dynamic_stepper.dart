@@ -229,7 +229,8 @@ class DynamicStepper extends StatefulWidget {
     this.slidableCardHeight,
     this.firstWidget,
     this.toggleWidget,
-    this.backgroundColor, this.horizontalMargin,
+    this.backgroundColor,
+    this.horizontalMargin,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -741,7 +742,8 @@ class _DynamicStepperState extends State<DynamicStepper>
 
   Widget _buildVerticalHeader(int index) {
     return Container(
-      margin:widget.horizontalMargin?? const EdgeInsets.symmetric(horizontal: 24.0),
+      margin: widget.horizontalMargin ??
+          const EdgeInsets.symmetric(horizontal: 24.0),
       child: Row(
         children: <Widget>[
           Column(
@@ -823,11 +825,11 @@ class _DynamicStepperState extends State<DynamicStepper>
             bottom: 24.0,
           ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           widget.steps[index].stepperContentWidgetBuilder(index) ??
               const SizedBox(),
-          _buildVerticalControls(index),
+          ///TODO: @Jiten: check for controls here
+          // _buildVerticalControls(index),
         ],
       ),
     );
