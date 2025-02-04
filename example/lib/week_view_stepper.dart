@@ -129,8 +129,6 @@ class _WeekViewStepperWidgetState extends State<WeekViewStepperWidget> {
         children: [
           Expanded(
             child: DynamicStepperWidget(
-              enableDrag:true,
-
               enableSwipeAction: false,
               isTitleOnlyStepper: true,
               showContent: true,

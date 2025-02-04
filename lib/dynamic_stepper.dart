@@ -229,7 +229,7 @@ class DynamicStepper extends StatefulWidget {
     this.slidableCardHeight,
     this.firstWidget,
     this.toggleWidget,
-    this.backgroundColor,
+    this.backgroundColor, this.horizontalMargin,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -368,6 +368,8 @@ class DynamicStepper extends StatefulWidget {
   /// custom margin on vertical stepper.
   final EdgeInsetsGeometry? margin;
 
+  final EdgeInsetsGeometry? horizontalMargin;
+
   @override
   State<DynamicStepper> createState() => _DynamicStepperState();
 }
@@ -378,7 +380,6 @@ class _DynamicStepperState extends State<DynamicStepper>
   final Map<int, DynamicStepState> _oldStates = <int, DynamicStepState>{};
   late List<DynamicStep> _steps;
   late int _currentStep;
-  bool _isDragging = false;
 
   @override
   void initState() {
@@ -740,14 +741,13 @@ class _DynamicStepperState extends State<DynamicStepper>
 
   Widget _buildVerticalHeader(int index) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0),
+      margin:widget.horizontalMargin?? const EdgeInsets.symmetric(horizontal: 24.0),
       child: Row(
         children: <Widget>[
           Column(
             children: <Widget>[
               // Line parts are always added in order for the ink splash to
               // flood the tips of the connector lines.
-
               if (!widget.isTitleOnlyStepper) ...[
                 _buildLine(!_isFirst(index)),
                 _buildIcon(index),
@@ -900,6 +900,8 @@ class _DynamicStepperState extends State<DynamicStepper>
     );
   }
 
+  ///Creates an reorderable item with slidable if [enableSwipeAction] is used
+  /// Otherwise  creates item without slidable
   dynamic buildReorderableItem(int i) {
     if (widget.enableSwipeAction) {
       return Material(

@@ -158,6 +158,7 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
         children: [
           Expanded(
             child: DynamicStepperWidget(
+
               enableSwipeAction: true,
               showContent: true,
               steps: _steps,
