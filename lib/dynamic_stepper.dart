@@ -823,6 +823,7 @@ class _DynamicStepperState extends State<DynamicStepper>
             bottom: 24.0,
           ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           widget.steps[index].stepperContentWidgetBuilder(index) ??
               const SizedBox(),
