@@ -782,7 +782,7 @@ class _DynamicStepperState extends State<DynamicStepper>
         if (widget.steps[index].stepperContentWidgetBuilder(index) != null)
           PositionedDirectional(
             start: 24.0,
-            top: widget.isTitleOnlyStepper ? 27.0 : 50,
+            top: widget.isTitleOnlyStepper ? 40.0 : 50,
             bottom: 0.0,
             child: SizedBox(
               width: 24.0,

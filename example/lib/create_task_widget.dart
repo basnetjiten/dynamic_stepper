@@ -33,7 +33,6 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
   // Create a DynamicStep widget
   DynamicStep _createStep({required bool isAddButton}) {
     return DynamicStep(
-
       isActive: true,
       state: isAddButton ? DynamicStepState.action : DynamicStepState.indexed,
       title: isAddButton
@@ -43,7 +42,25 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
             )
           : null,
       stepperContentWidgetBuilder: (int stepIndex) {
-        return isAddButton ? null : _stepFormWidget(stepIndex);
+        return isAddButton
+            ? ListView(
+                shrinkWrap: true,
+                primary: true,
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: List<Widget>.generate(5, (index) {
+                        return Container(
+                          height: 100,
+                          width: 100,
+                          color: Colors.red,
+                        );
+                      }),
+                    )
+                  ])
+            : _stepFormWidget(stepIndex);
       },
     );
   }
@@ -76,7 +93,7 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: Column(
           children: [
-           // _buildStepImage(),
+            // _buildStepImage(),
             _buildTitleField(index),
             _buildTimerField(index),
           ],
@@ -146,19 +163,14 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
       appBar: AppBar(
         title: const Text('Dynamic Stepper'),
         actions: [
-          IconButton(onPressed: () {
-
-          }, icon: const Icon(Icons.add)),
-          IconButton(onPressed: () {
-
-          }, icon: const Icon(Icons.safety_check))
+          IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.safety_check))
         ],
       ),
       body: Column(
         children: [
           Expanded(
             child: DynamicStepperWidget(
-
               enableSwipeAction: true,
               showContent: true,
               steps: _steps,
