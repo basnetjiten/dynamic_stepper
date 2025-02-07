@@ -214,7 +214,7 @@ class DynamicStepper extends StatefulWidget {
     this.onStepCancel,
     this.controlsBuilder,
     this.elevation,
-    this.margin,
+    this.contentMargin,
     this.alwaysShowContent = true,
     this.isTitleOnlyStepper = false,
     this.enableSwipeAction = false,
@@ -231,7 +231,7 @@ class DynamicStepper extends StatefulWidget {
     this.firstWidget,
     this.toggleWidget,
     this.backgroundColor,
-    this.horizontalMargin,
+    this.horizontalMargin, this.lineStartMargin,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -261,6 +261,9 @@ class DynamicStepper extends StatefulWidget {
 
   /// Shows only title widget in the stepper
   final bool isTitleOnlyStepper;
+
+
+  final double? lineStartMargin;
 
   /// Icon to use for stepper circle. usually an action icon
   final Widget? actionIcon;
@@ -371,7 +374,7 @@ class DynamicStepper extends StatefulWidget {
   final double? elevation;
 
   /// custom margin on vertical stepper.
-  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? contentMargin;
 
   final EdgeInsetsGeometry? horizontalMargin;
 
@@ -785,7 +788,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       children: <Widget>[
         if (widget.steps[index].stepperContentWidgetBuilder(index) != null)
           PositionedDirectional(
-            start: 24.0,
+            start: widget.lineStartMargin ?? 24.0,
             top: widget.isTitleOnlyStepper ? 30.0 : 50,
             bottom: 0.0,
             child: SizedBox(
@@ -821,7 +824,7 @@ class _DynamicStepperState extends State<DynamicStepper>
 
   Container _secondChild(int index) {
     return Container(
-      margin: widget.margin ??
+      margin: widget.contentMargin ??
           const EdgeInsetsDirectional.only(
             start: 60.0,
             top: 24,
