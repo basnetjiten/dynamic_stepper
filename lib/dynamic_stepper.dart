@@ -218,6 +218,7 @@ class DynamicStepper extends StatefulWidget {
     this.alwaysShowContent = true,
     this.isTitleOnlyStepper = false,
     this.enableSwipeAction = false,
+    this.enableDrag = true,
     this.actionIcon,
     this.onStepDelete,
     this.buildDefaultDragHandles = false,
@@ -254,6 +255,9 @@ class DynamicStepper extends StatefulWidget {
 
   /// Shows only title widget in the stepper
   final bool enableSwipeAction;
+
+  /// Enables Re-orderable item drag
+  final bool enableDrag;
 
   /// Shows only title widget in the stepper
   final bool isTitleOnlyStepper;
@@ -910,6 +914,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       return Material(
         key: ObjectKey(_steps[i]),
         child: CustomDragStartListener(
+          enabled: widget.enableDrag,
           index: i,
           child: Slidable(
             enabled:
@@ -995,6 +1000,7 @@ class _DynamicStepperState extends State<DynamicStepper>
 
   Widget _stepperContentWidget(int i) {
     return CustomDragStartListener(
+      enabled: widget.enableDrag,
       key: ObjectKey(_steps[i]),
       index: i,
       child: Container(
