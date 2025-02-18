@@ -861,6 +861,7 @@ class _DynamicStepperState extends State<DynamicStepper>
               ),
             ),
           SliverReorderableList(
+            autoScrollerVelocityScalar: 40,
               proxyDecorator: (child, index, animation) {
                 return _proxyDecoratorBuilder(
                   animation,
