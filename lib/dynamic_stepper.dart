@@ -11,6 +11,7 @@ import 'dart:ui';
 
 import 'package:dynamic_stepper/custom_drag_listener.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -857,6 +858,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       notificationPredicate: widget.enableRefresh ? (_) => true : (_) => false,
       onRefresh: widget.onRefresh ?? () async {},
       child: CustomScrollView(
+        dragStartBehavior: DragStartBehavior.down,
         physics: widget.physics,
         slivers: [
           if (widget.firstWidget != null)
@@ -872,7 +874,7 @@ class _DynamicStepperState extends State<DynamicStepper>
             ),
           SliverReorderableList(
               autoScrollerVelocityScalar:
-                  widget.autoScrollerVelocityScalar ?? 30,
+                  widget.autoScrollerVelocityScalar ?? 25,
               proxyDecorator: (child, index, animation) {
                 return _proxyDecoratorBuilder(
                   animation,
