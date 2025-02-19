@@ -235,6 +235,7 @@ class DynamicStepper extends StatefulWidget {
     this.lineStartMargin,
     this.dragWidgetWidth,
     this.dragWidgetHeight,
+    this.autoScrollerVelocityScalar,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -270,6 +271,8 @@ class DynamicStepper extends StatefulWidget {
   final double? dragWidgetWidth;
 
   final double? dragWidgetHeight;
+
+  final double? autoScrollerVelocityScalar;
 
   /// Icon to use for stepper circle. usually an action icon
   final Widget? actionIcon;
@@ -868,14 +871,18 @@ class _DynamicStepperState extends State<DynamicStepper>
               ),
             ),
           SliverReorderableList(
-              autoScrollerVelocityScalar: 40,
+              autoScrollerVelocityScalar:
+                  widget.autoScrollerVelocityScalar ?? 30,
               proxyDecorator: (child, index, animation) {
                 return _proxyDecoratorBuilder(
                   animation,
-                  SizedBox(
-                    height: widget.dragWidgetHeight ?? 150,
-                    width: widget.dragWidgetWidth ?? 400,
-                    child: SingleChildScrollView(child: child),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: widget.dragWidgetHeight ?? 200,
+                      width: widget.dragWidgetWidth ?? 400,
+                      child: SingleChildScrollView(child: child),
+                    ),
                   ),
                 );
               },
