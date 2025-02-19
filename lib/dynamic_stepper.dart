@@ -858,7 +858,6 @@ class _DynamicStepperState extends State<DynamicStepper>
       notificationPredicate: widget.enableRefresh ? (_) => true : (_) => false,
       onRefresh: widget.onRefresh ?? () async {},
       child: CustomScrollView(
-        dragStartBehavior: DragStartBehavior.down,
         physics: widget.physics,
         slivers: [
           if (widget.firstWidget != null)
@@ -878,13 +877,10 @@ class _DynamicStepperState extends State<DynamicStepper>
               proxyDecorator: (child, index, animation) {
                 return _proxyDecoratorBuilder(
                   animation,
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      height: widget.dragWidgetHeight ?? 200,
-                      width: widget.dragWidgetWidth ?? 400,
-                      child: SingleChildScrollView(child: child),
-                    ),
+                  SizedBox(
+                    height: widget.dragWidgetHeight ?? 200,
+                    width: widget.dragWidgetWidth ?? 400,
+                    child: SingleChildScrollView(child: child),
                   ),
                 );
               },
