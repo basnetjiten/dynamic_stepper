@@ -231,7 +231,10 @@ class DynamicStepper extends StatefulWidget {
     this.firstWidget,
     this.toggleWidget,
     this.backgroundColor,
-    this.horizontalMargin, this.lineStartMargin,
+    this.horizontalMargin,
+    this.lineStartMargin,
+    this.dragWidgetWidth,
+    this.dragWidgetHeight,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -262,8 +265,11 @@ class DynamicStepper extends StatefulWidget {
   /// Shows only title widget in the stepper
   final bool isTitleOnlyStepper;
 
-
   final double? lineStartMargin;
+
+  final double? dragWidgetWidth;
+
+  final double? dragWidgetHeight;
 
   /// Icon to use for stepper circle. usually an action icon
   final Widget? actionIcon;
@@ -835,6 +841,7 @@ class _DynamicStepperState extends State<DynamicStepper>
         children: <Widget>[
           widget.steps[index].stepperContentWidgetBuilder(index) ??
               const SizedBox(),
+
           ///TODO: @Jiten: check for controls here
           // _buildVerticalControls(index),
         ],
@@ -861,11 +868,15 @@ class _DynamicStepperState extends State<DynamicStepper>
               ),
             ),
           SliverReorderableList(
-            autoScrollerVelocityScalar: 40,
+              autoScrollerVelocityScalar: 40,
               proxyDecorator: (child, index, animation) {
                 return _proxyDecoratorBuilder(
                   animation,
-                  child,
+                  SizedBox(
+                    height: widget.dragWidgetHeight ?? 150,
+                    width: widget.dragWidgetWidth ?? 400,
+                    child: SingleChildScrollView(child: child),
+                  ),
                 );
               },
               itemCount: _steps.length,
@@ -904,7 +915,7 @@ class _DynamicStepperState extends State<DynamicStepper>
         final double elevation = lerpDouble(0, 6, animValue)!;
         return Material(
           elevation: elevation,
-          child: child,
+          child: SingleChildScrollView(child: child),
         );
       },
       child: child,
@@ -1032,7 +1043,6 @@ class _DynamicStepperState extends State<DynamicStepper>
             // else
             _buildVerticalBody(i),
             _buildVerticalHeader(i),
-
           ],
         ),
       ),
