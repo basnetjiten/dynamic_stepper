@@ -12,7 +12,7 @@ class CustomDragStartListener extends ReorderableDelayedDragStartListener {
   @override
   MultiDragGestureRecognizer createRecognizer() {
     return DelayedMultiDragGestureRecognizer(
-      delay: const Duration(milliseconds: 250),
+      delay: const Duration(milliseconds: 200),
       debugOwner: this,
     );
   }
