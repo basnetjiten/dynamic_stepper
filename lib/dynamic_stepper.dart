@@ -234,9 +234,9 @@ class DynamicStepper extends StatefulWidget {
     this.backgroundColor,
     this.horizontalMargin,
     this.lineStartMargin,
-    this.dragWidgetWidth,
-    this.dragWidgetHeight,
-    this.autoScrollerVelocityScalar, this.scale,
+    this.autoScrollerVelocityScalar,
+    this.scaleX,
+    this.scaleY,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -269,11 +269,9 @@ class DynamicStepper extends StatefulWidget {
 
   final double? lineStartMargin;
 
-  final double? dragWidgetWidth;
+  final double? scaleX;
 
-  final double? dragWidgetHeight;
-
-  final double? scale;
+  final double? scaleY;
 
   final double? autoScrollerVelocityScalar;
 
@@ -880,10 +878,9 @@ class _DynamicStepperState extends State<DynamicStepper>
               proxyDecorator: (child, index, animation) {
                 return _proxyDecoratorBuilder(
                   animation,
-                  Transform.scale(
-                    scale:widget.scale??1.5,
-                    child: child,
-                  ),
+                  child,
+                  scaleX: widget.scaleX,
+                  scaleY: widget.scaleY,
                 );
               },
               itemCount: _steps.length,
@@ -914,15 +911,20 @@ class _DynamicStepperState extends State<DynamicStepper>
   }
 
   AnimatedBuilder _proxyDecoratorBuilder(
-      Animation<double> animation, Widget child) {
+      Animation<double> animation, Widget child,
+      {double? scaleX, double? scaleY}) {
     return AnimatedBuilder(
       animation: animation,
       builder: (BuildContext context, Widget? child) {
         final double animValue = Curves.easeInOut.transform(animation.value);
         final double elevation = lerpDouble(0, 6, animValue)!;
-        return Material(
-          elevation: elevation,
-          child: SingleChildScrollView(child: child),
+        return Transform.scale(
+          scaleX: scaleX ?? 0.8,
+          scaleY: scaleY ?? 0.8,
+          child: Material(
+            elevation: elevation,
+            child: child,
+          ),
         );
       },
       child: child,
