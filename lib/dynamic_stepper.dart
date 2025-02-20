@@ -236,7 +236,7 @@ class DynamicStepper extends StatefulWidget {
     this.lineStartMargin,
     this.dragWidgetWidth,
     this.dragWidgetHeight,
-    this.autoScrollerVelocityScalar,
+    this.autoScrollerVelocityScalar, this.scale,
   }) : assert(0 <= currentStep && currentStep < steps.length);
 
   //Enable or disable item to be draggable in a ReorderableListView
@@ -272,6 +272,8 @@ class DynamicStepper extends StatefulWidget {
   final double? dragWidgetWidth;
 
   final double? dragWidgetHeight;
+
+  final double? scale;
 
   final double? autoScrollerVelocityScalar;
 
@@ -878,10 +880,9 @@ class _DynamicStepperState extends State<DynamicStepper>
               proxyDecorator: (child, index, animation) {
                 return _proxyDecoratorBuilder(
                   animation,
-                  SizedBox(
-                    height: widget.dragWidgetHeight ?? 200,
-                    width: widget.dragWidgetWidth ?? 400,
-                    child: SingleChildScrollView(child: child),
+                  Transform.scale(
+                    scale:widget.scale??1.5,
+                    child: child,
                   ),
                 );
               },
