@@ -41,6 +41,7 @@ enum DynamicStepState {
   /// A step that is currently having an error. e.g. the user has submitted wrong
   /// input.
   action,
+  none
 }
 
 /// Defines the [DynamicStepper]'s main axis.
@@ -217,6 +218,7 @@ class DynamicStepper extends StatefulWidget {
     this.contentMargin,
     this.alwaysShowContent = true,
     this.isTitleOnlyStepper = false,
+    this.drawLastLine = true,
     this.enableSwipeAction = false,
     this.enableDrag = true,
     this.actionIcon,
@@ -268,6 +270,8 @@ class DynamicStepper extends StatefulWidget {
 
   /// Shows only title widget in the stepper
   final bool isTitleOnlyStepper;
+
+  final bool drawLastLine;
 
   final double? lineStartMargin;
 
@@ -492,15 +496,17 @@ class _DynamicStepperState extends State<DynamicStepper>
               color: isDarkActive ? _kCircleActiveDark : _kCircleActiveLight,
               size: 18.0,
             );
+      case DynamicStepState.none:
+        return Container(
+          color: Colors.transparent,
+        );
     }
   }
 
   Color _circleColor(int index) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     if (!_isDark()) {
-      return _steps[index].isActive
-          ? colorScheme.primary
-          : colorScheme.onSurface.withOpacity(0.38);
+      return _steps[index].isActive ? colorScheme.primary : Colors.transparent;
     } else {
       return _steps[index].isActive
           ? colorScheme.secondary
@@ -665,6 +671,7 @@ class _DynamicStepperState extends State<DynamicStepper>
 
     switch (_steps[index].state) {
       case DynamicStepState.action:
+      case DynamicStepState.none:
       case DynamicStepState.indexed:
       case DynamicStepState.editing:
       case DynamicStepState.complete:
@@ -686,6 +693,7 @@ class _DynamicStepperState extends State<DynamicStepper>
 
     switch (_steps[index].state) {
       case DynamicStepState.action:
+      case DynamicStepState.none:
       case DynamicStepState.indexed:
       case DynamicStepState.editing:
       case DynamicStepState.complete:
@@ -707,6 +715,7 @@ class _DynamicStepperState extends State<DynamicStepper>
 
     switch (_steps[index].state) {
       case DynamicStepState.action:
+      case DynamicStepState.none:
       case DynamicStepState.indexed:
       case DynamicStepState.editing:
       case DynamicStepState.complete:
@@ -770,7 +779,9 @@ class _DynamicStepperState extends State<DynamicStepper>
               // Line parts are always added in order for the ink splash to
               // flood the tips of the connector lines.
               if (!widget.isTitleOnlyStepper) ...[
-                _buildLine(!_isFirst(index)),
+                if (widget.drawLastLine) ...[
+                  _buildLine(!_isFirst(index)),
+                ],
                 _buildIcon(index),
               ],
 
@@ -905,7 +916,11 @@ class _DynamicStepperState extends State<DynamicStepper>
                 widget.onStepDragged?.call(oldIndex, newIndex);
               },
               itemBuilder: (BuildContext context, int i) {
-                return buildReorderableItem(i);
+                return IgnorePointer(
+                  key: ObjectKey(_steps[i]),
+                  ignoring: !widget.dragLastWidget && _isLast(i),
+                  child: buildReorderableItem(i),
+                );
               })
         ],
       ),
