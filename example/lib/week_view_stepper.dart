@@ -30,52 +30,47 @@ class _WeekViewStepperWidgetState extends State<WeekViewStepperWidget> {
 
   final List<List<String>> _images = [
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
     [
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/600x400/png',
+      'https://placehold.co/600x400/png',
     ],
   ];
 
@@ -89,8 +84,10 @@ class _WeekViewStepperWidgetState extends State<WeekViewStepperWidget> {
               stepperIcon: _days[index] == 'Wednesday'
                   ? const Icon(Icons.abc)
                   : Container(
-                height: 100,width: 100,color: AppColors.textDarkGrey,
-                  child:Text(_days[index])),
+                      height: 100,
+                      width: 100,
+                      color: AppColors.textDarkGrey,
+                      child: Text(_days[index])),
               state: DynamicStepState.indexed,
               stepperContentWidgetBuilder: (int index) {
                 if (_days[index] == 'Wednesday') {
@@ -128,21 +125,23 @@ class _WeekViewStepperWidgetState extends State<WeekViewStepperWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Dynamic Stepper')),
-      body: Column(
-        children: [
-          Expanded(
-            child: DynamicStepperWidget(
-
-              enableSwipeAction: false,
-              isTitleOnlyStepper: true,
-              showContent: true,
-              steps: _steps,
+      body: SizedBox(
+        height: double.maxFinite,
+        child: Column(
+          children: [
+            Expanded(
+              child: DynamicStepperWidget(
+                enableSwipeAction: false,
+                isTitleOnlyStepper: false,
+                showContent: true,
+                steps: _steps,
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
+            const SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
       ),
     );
   }

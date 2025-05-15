@@ -28,11 +28,8 @@ class DynamicStepperWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicStepper(
       dragLastWidget: false,
-      physics: const NeverScrollableScrollPhysics(),
-      lastWidget: Padding(
-        padding: const EdgeInsets.only(top: 50),
-        child: TextButton(onPressed: () {}, child: const Text('click')),
-      ),
+      enableDrag: true,
+      physics: const AlwaysScrollableScrollPhysics(),
       enableSwipeAction: enableSwipeAction,
       alwaysShowContent: showContent,
       actionIcon: actionIcon,

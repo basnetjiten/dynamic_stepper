@@ -107,7 +107,7 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Image.network(
-        'https://via.placeholder.com/1024',
+        'https://placehold.co/600x400/png',
         width: 500,
         height: 180,
         fit: BoxFit.fitWidth,
@@ -167,35 +167,39 @@ class _CreateTaskWidgetWidgetState extends State<CreateTaskWidget>
           IconButton(onPressed: () {}, icon: const Icon(Icons.safety_check))
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: DynamicStepperWidget(
-              enableSwipeAction: true,
-              showContent: true,
-              steps: _steps,
-              onStepDeleted: (index) => setState(
-                () {
-                  _steps.removeAt(index);
-                  _createTaskCubit.deleteStep(index);
-                },
+      body: SizedBox(
+        height: 200,
+        width: 200,
+        child: Column(
+          children: [
+            Expanded(
+              child: DynamicStepperWidget(
+                enableSwipeAction: true,
+                showContent: true,
+                steps: _steps,
+                onStepDeleted: (index) => setState(
+                  () {
+                    _steps.removeAt(index);
+                    _createTaskCubit.deleteStep(index);
+                  },
+                ),
+                onStepDragged: _createTaskCubit.onStepDragged,
               ),
-              onStepDragged: _createTaskCubit.onStepDragged,
             ),
-          ),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-          // TextButton(
-          //   onPressed: () {
-          //     _createTaskCubit.saveSteps();
-          //   },
-          //   child: const Text('Addx xStep'),
-          // ),
-          // const SizedBox(
-          //   height: 40,
-          // )
-        ],
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            // TextButton(
+            //   onPressed: () {
+            //     _createTaskCubit.saveSteps();
+            //   },
+            //   child: const Text('Addx xStep'),
+            // ),
+            // const SizedBox(
+            //   height: 40,
+            // )
+          ],
+        ),
       ),
     );
   }

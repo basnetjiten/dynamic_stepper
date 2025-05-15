@@ -56,7 +56,7 @@ enum DynamicStepperType {
 /// forward and backward controls for any given step.
 ///
 /// Used by [DynamicStepper.controlsBuilder].
-@immutable
+
 class DynamicControlsDetails {
   /// Creates a set of details describing the Stepper.
   const DynamicControlsDetails({
@@ -129,7 +129,6 @@ const double _kTriangleHeight =
 ///
 ///  * [DynamicStepper]
 ///  * <https://material.io/archive/guidelines/components/steppers.html>
-@immutable
 class DynamicStep {
   /// Creates a step for a [DynamicStepper].
   ///
@@ -230,6 +229,7 @@ class DynamicStepper extends StatefulWidget {
     this.lastWidget,
     this.slidableCardHeight,
     this.firstWidget,
+    this.footerActionWidget,
     this.toggleWidget,
     this.backgroundColor,
     this.horizontalMargin,
@@ -255,6 +255,8 @@ class DynamicStepper extends StatefulWidget {
   final Color? backgroundColor;
 
   final Widget? toggleWidget;
+
+  final Widget? footerActionWidget;
 
   final double? slidableCardHeight;
 
@@ -1165,7 +1167,13 @@ class _DynamicStepperState extends State<DynamicStepper>
     }());
     switch (widget.type) {
       case DynamicStepperType.vertical:
-        return _buildVertical();
+        return Column(
+          children: [
+            Expanded(child: _buildVertical()),
+            // Non-draggable footer outside the reorderable area
+            widget.footerActionWidget ?? SizedBox.shrink()
+          ],
+        );
       case DynamicStepperType.horizontal:
         return _buildHorizontal();
     }
