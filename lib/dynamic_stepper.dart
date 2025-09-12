@@ -109,7 +109,7 @@ typedef ControlsWidgetBuilder = Widget Function(
 typedef StepperContentWidgetBuilder = Widget? Function(int index);
 
 const TextStyle _kStepStyle = TextStyle(
-  fontSize: 12.0,
+  fontSize: 14.0,
   color: Colors.white,
 );
 const Color _kErrorLight = Colors.red;
@@ -470,10 +470,11 @@ class _DynamicStepperState extends State<DynamicStepper>
       case DynamicStepState.indexed:
       case DynamicStepState.disabled:
         return Text(
+          textAlign: TextAlign.center,
           '${index + 1}',
           style: isDarkActive
-              ? _kStepStyle.copyWith(color: Colors.black87)
-              : _kStepStyle,
+              ? _kStepStyle.copyWith(color: Colors.black87,height: 0)
+              : _kStepStyle.copyWith(height: 0),
         );
       case DynamicStepState.editing:
         return Icon(
@@ -516,22 +517,18 @@ class _DynamicStepperState extends State<DynamicStepper>
 
   Widget _buildCircle(int index, bool oldState) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      //margin: const EdgeInsets.symmetric(vertical: 8.0),
       width: _kStepSize,
       height: _kStepSize,
       alignment: Alignment.center,
-      child: AnimatedContainer(
-        curve: Curves.fastOutSlowIn,
-        duration: kThemeAnimationDuration,
-        decoration: BoxDecoration(
-          color: _circleColor(index),
-          shape: BoxShape.circle,
-        ),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: _buildCircleChild(
-              index, oldState && _steps[index].state == DynamicStepState.error),
-        ),
+      decoration: BoxDecoration(
+        color: _circleColor(index),
+        shape: BoxShape.circle,
+      ),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: _buildCircleChild(
+            index, oldState && _steps[index].state == DynamicStepState.error),
       ),
     );
   }
