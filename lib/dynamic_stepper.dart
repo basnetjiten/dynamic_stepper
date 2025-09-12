@@ -519,6 +519,7 @@ class _DynamicStepperState extends State<DynamicStepper>
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       width: _kStepSize,
       height: _kStepSize,
+      alignment: Alignment.center,
       child: AnimatedContainer(
         curve: Curves.fastOutSlowIn,
         duration: kThemeAnimationDuration,
@@ -526,7 +527,8 @@ class _DynamicStepperState extends State<DynamicStepper>
           color: _circleColor(index),
           shape: BoxShape.circle,
         ),
-        child: Center(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
           child: _buildCircleChild(
               index, oldState && _steps[index].state == DynamicStepState.error),
         ),
