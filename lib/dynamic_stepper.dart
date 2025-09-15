@@ -134,18 +134,20 @@ class DynamicStep {
   /// Creates a step for a [DynamicStepper].
   ///
   /// The [title], [content], and [state] arguments must not be null.
-  const DynamicStep(
-      {this.title,
-      this.stepperIcon,
-      required this.stepperContentWidgetBuilder,
-      this.subtitle,
-      this.content,
-      this.state = DynamicStepState.indexed,
-      this.isActive = false,
-      this.label,
-      this.actionIcon});
+  const DynamicStep({
+    this.title,
+    this.stepperIcon,
+    required this.stepperContentWidgetBuilder,
+    this.subtitle,
+    this.content,
+    this.state = DynamicStepState.indexed,
+    this.isActive = false,
+    this.label,
+    this.actionIcon,
+  });
 
   final Widget? stepperIcon;
+
   final StepperContentWidgetBuilder stepperContentWidgetBuilder;
 
   /// The title of the step that typically describes it.
@@ -207,6 +209,7 @@ class DynamicStepper extends StatefulWidget {
   const DynamicStepper({
     super.key,
     required this.steps,
+    this.kStepSize,
     this.physics,
     this.type = DynamicStepperType.vertical,
     this.currentStep = 0,
@@ -240,6 +243,8 @@ class DynamicStepper extends StatefulWidget {
     this.scaleX,
     this.scaleY,
   }) : assert(0 <= currentStep && currentStep < steps.length);
+
+  final double? kStepSize;
 
   //Enable or disable item to be draggable in a ReorderableListView
   final bool buildDefaultDragHandles;
@@ -473,7 +478,7 @@ class _DynamicStepperState extends State<DynamicStepper>
           textAlign: TextAlign.center,
           '${index + 1}',
           style: isDarkActive
-              ? _kStepStyle.copyWith(color: Colors.black87,height: 0)
+              ? _kStepStyle.copyWith(color: Colors.black87, height: 0)
               : _kStepStyle.copyWith(height: 0),
         );
       case DynamicStepState.editing:
@@ -518,8 +523,8 @@ class _DynamicStepperState extends State<DynamicStepper>
   Widget _buildCircle(int index, bool oldState) {
     return Container(
       //margin: const EdgeInsets.symmetric(vertical: 8.0),
-      width: _kStepSize,
-      height: _kStepSize,
+      width: widget.kStepSize ?? _kStepSize,
+      height: widget.kStepSize ?? _kStepSize,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: _circleColor(index),
