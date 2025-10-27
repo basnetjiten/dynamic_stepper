@@ -243,7 +243,8 @@ class DynamicStepper extends StatefulWidget {
       this.scaleX,
       this.scaleY,
       this.stepperIndexColor,
-      this.stepperFontSize})
+      this.stepperFontSize,
+      this.stepRadius})
       : assert(0 <= currentStep && currentStep < steps.length);
 
   final double? kStepSize;
@@ -276,6 +277,8 @@ class DynamicStepper extends StatefulWidget {
   final bool enableDrag;
 
   final Color? stepperIndexColor;
+
+  final double? stepRadius;
 
   final double? stepperFontSize;
 
@@ -1084,7 +1087,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                 ),
                 CircleAvatar(
                   backgroundColor: widget.stepperIndexColor,
-                  radius: 16,
+                  radius: widget.stepRadius ?? 32,
                   child: Center(
                     child: Text(
                       '${i + 1}',
