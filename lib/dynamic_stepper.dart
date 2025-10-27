@@ -478,8 +478,8 @@ class _DynamicStepperState extends State<DynamicStepper>
           textAlign: TextAlign.center,
           '${index + 1}',
           style: isDarkActive
-              ? _kStepStyle.copyWith(color: Colors.black87, height: 0)
-              : _kStepStyle.copyWith(height: 0),
+              ? _kStepStyle.copyWith(color: Colors.black87, height: 1)
+              : _kStepStyle.copyWith(height: 1),
         );
       case DynamicStepState.editing:
         return Icon(
