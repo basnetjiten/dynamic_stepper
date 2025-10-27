@@ -104,16 +104,13 @@ class _WeekViewStepperWidgetState extends State<WeekViewStepperWidget> {
                           scrollDirection: Axis.horizontal,
                           itemCount: _images[index].length,
                           itemBuilder: (context, imageIndex) {
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 30, 5, 0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.network(
-                                  _images[index][imageIndex],
-                                  width: 108,
-                                  height: 150,
-                                  fit: BoxFit.cover,
-                                ),
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.network(
+                                _images[index][imageIndex],
+                                width: 108,
+                                height: 150,
+                                fit: BoxFit.cover,
                               ),
                             );
                           },

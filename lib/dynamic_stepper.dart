@@ -209,6 +209,7 @@ class DynamicStepper extends StatefulWidget {
   const DynamicStepper(
       {super.key,
       required this.steps,
+      required this.stepCircleColor,
       this.kStepSize,
       this.physics,
       this.type = DynamicStepperType.vertical,
@@ -254,6 +255,8 @@ class DynamicStepper extends StatefulWidget {
   final double? stepFontSize;
 
   final Widget? lastWidget;
+
+  final Color? stepCircleColor;
 
   final bool dragLastWidget;
 
@@ -793,17 +796,30 @@ class _DynamicStepperState extends State<DynamicStepper>
               // Line parts are always added in order for the ink splash to
               // flood the tips of the connector lines.
               if (!widget.isTitleOnlyStepper) ...[
-                if (widget.drawLastLine) ...[
-                  // _buildLine(!_isFirst(index)),
-                ],
-                _buildIcon(index),
+                Padding(
+                  padding: EdgeInsets.only(top: _isFirst(index) ? 70 : 0.0),
+                  child: CircleAvatar(
+                      backgroundColor: widget.stepCircleColor,
+                      radius: 16,
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        '${index + 1}',
+                        style: _kStepStyle.copyWith(
+                            color: Colors.white,
+                            height: 1,
+                            fontSize: widget.stepFontSize ?? 18),
+                      )),
+                ),
+                const SizedBox(height: 5),
+                Container(
+                  width: _isLast(index) ? 0 : 1,
+                  height: 175,
+                  color: Colors.grey,
+                ),
               ],
 
               if (widget.isTitleOnlyStepper) ...[
                 widget.steps[index].stepperIcon ?? _buildHeaderText(index)
-              ],
-              if (!widget.isTitleOnlyStepper) ...[
-                // _buildLine(!_isLast(index)),
               ],
             ],
           ),
@@ -824,37 +840,37 @@ class _DynamicStepperState extends State<DynamicStepper>
     return Stack(
       children: <Widget>[
         if (widget.steps[index].stepperContentWidgetBuilder(index) != null)
-          PositionedDirectional(
-            start: widget.lineStartMargin ?? 24.0,
-            top: widget.isTitleOnlyStepper ? 30.0 : 50,
-            bottom: widget.verticalLineBottomPadding ?? 0,
-            child: SizedBox(
-              width: 24.0,
-              child: Center(
-                child: SizedBox(
-                  width: _isLast(index) ? 0.0 : 1.0,
-                  child: Container(
-                    color: Colors.grey.shade400,
-                  ),
+          // PositionedDirectional(
+          //   start: widget.lineStartMargin ?? 24.0,
+          //   top: widget.isTitleOnlyStepper ? 30.0 : 100,
+          //   bottom: widget.verticalLineBottomPadding ?? 0,
+          //   child: SizedBox(
+          //     width: 24.0,
+          //     child: Center(
+          //       child: SizedBox(
+          //         width: _isLast(index) ? 0.0 : 1.0,
+          //         child: Container(
+          //           color: Colors.grey.shade400,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          widget.alwaysShowContent
+              ? _secondChild(index)
+              : AnimatedCrossFade(
+                  firstChild: Container(height: 0.0),
+                  secondChild: _secondChild(index),
+                  firstCurve:
+                      const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
+                  secondCurve:
+                      const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
+                  sizeCurve: Curves.fastOutSlowIn,
+                  crossFadeState: _isCurrent(index)
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  duration: kThemeAnimationDuration,
                 ),
-              ),
-            ),
-          ),
-        widget.alwaysShowContent
-            ? _secondChild(index)
-            : AnimatedCrossFade(
-                firstChild: Container(height: 0.0),
-                secondChild: _secondChild(index),
-                firstCurve:
-                    const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
-                secondCurve:
-                    const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
-                sizeCurve: Curves.fastOutSlowIn,
-                crossFadeState: _isCurrent(index)
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                duration: kThemeAnimationDuration,
-              ),
       ],
     );
   }
