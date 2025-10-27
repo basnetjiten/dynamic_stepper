@@ -209,7 +209,6 @@ class DynamicStepper extends StatefulWidget {
   const DynamicStepper(
       {super.key,
       required this.steps,
-      required this.stepCircleColor,
       this.kStepSize,
       this.physics,
       this.type = DynamicStepperType.vertical,
@@ -243,8 +242,8 @@ class DynamicStepper extends StatefulWidget {
       this.autoScrollerVelocityScalar,
       this.scaleX,
       this.scaleY,
-      this.stepFontSize,
-      this.verticalLineBottomPadding})
+      this.stepperIndexColor,
+      this.stepperFontSize})
       : assert(0 <= currentStep && currentStep < steps.length);
 
   final double? kStepSize;
@@ -252,11 +251,7 @@ class DynamicStepper extends StatefulWidget {
   //Enable or disable item to be draggable in a ReorderableListView
   final bool buildDefaultDragHandles;
 
-  final double? stepFontSize;
-
   final Widget? lastWidget;
-
-  final Color? stepCircleColor;
 
   final bool dragLastWidget;
 
@@ -280,10 +275,12 @@ class DynamicStepper extends StatefulWidget {
   /// Enables Re-orderable item drag
   final bool enableDrag;
 
+  final Color? stepperIndexColor;
+
+  final double? stepperFontSize;
+
   /// Shows only title widget in the stepper
   final bool isTitleOnlyStepper;
-
-  final double? verticalLineBottomPadding;
 
   final bool drawLastLine;
 
@@ -487,12 +484,8 @@ class _DynamicStepperState extends State<DynamicStepper>
           textAlign: TextAlign.center,
           '${index + 1}',
           style: isDarkActive
-              ? _kStepStyle.copyWith(
-                  color: Colors.black87,
-                  height: 1,
-                  fontSize: widget.stepFontSize ?? 18)
-              : _kStepStyle.copyWith(
-                  height: 1, fontSize: widget.stepFontSize ?? 18),
+              ? _kStepStyle.copyWith(color: Colors.black87, height: 1)
+              : _kStepStyle.copyWith(height: 1),
         );
       case DynamicStepState.editing:
         return Icon(
@@ -788,7 +781,7 @@ class _DynamicStepperState extends State<DynamicStepper>
   Widget _buildVerticalHeader(int index) {
     return Container(
       margin: widget.horizontalMargin ??
-          const EdgeInsets.symmetric(horizontal: 15.0),
+          const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
         children: <Widget>[
           Column(
@@ -796,30 +789,28 @@ class _DynamicStepperState extends State<DynamicStepper>
               // Line parts are always added in order for the ink splash to
               // flood the tips of the connector lines.
               if (!widget.isTitleOnlyStepper) ...[
-                Padding(
-                  padding: EdgeInsets.only(top: _isFirst(index) ? 70 : 0.0),
-                  child: CircleAvatar(
-                      backgroundColor: widget.stepCircleColor,
-                      radius: 16,
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        '${index + 1}',
-                        style: _kStepStyle.copyWith(
-                            color: Colors.white,
-                            height: 1,
-                            fontSize: widget.stepFontSize ?? 18),
-                      )),
+                if (widget.drawLastLine) ...[
+                  // _buildLine(!_isFirst(index)),
+                ],
+                _buildIcon(index),
+                SizedBox(
+                  height: 5,
                 ),
-                const SizedBox(height: 5),
                 Container(
-                  width: _isLast(index) ? 0 : 1,
-                  height: 175,
+                  width: 1,
+                  height: 100,
                   color: Colors.grey,
+                ),
+                SizedBox(
+                  height: 5,
                 ),
               ],
 
               if (widget.isTitleOnlyStepper) ...[
                 widget.steps[index].stepperIcon ?? _buildHeaderText(index)
+              ],
+              if (!widget.isTitleOnlyStepper) ...[
+                //_buildLine(!_isLast(index)),
               ],
             ],
           ),
@@ -836,41 +827,42 @@ class _DynamicStepperState extends State<DynamicStepper>
     );
   }
 
-  Widget _buildVerticalBody(int index) {
+  Widget _buildVerticalBody(int index, {bool usePositionWidget = true}) {
     return Stack(
       children: <Widget>[
-        if (widget.steps[index].stepperContentWidgetBuilder(index) != null)
-          // PositionedDirectional(
-          //   start: widget.lineStartMargin ?? 24.0,
-          //   top: widget.isTitleOnlyStepper ? 30.0 : 100,
-          //   bottom: widget.verticalLineBottomPadding ?? 0,
-          //   child: SizedBox(
-          //     width: 24.0,
-          //     child: Center(
-          //       child: SizedBox(
-          //         width: _isLast(index) ? 0.0 : 1.0,
-          //         child: Container(
-          //           color: Colors.grey.shade400,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          widget.alwaysShowContent
-              ? _secondChild(index)
-              : AnimatedCrossFade(
-                  firstChild: Container(height: 0.0),
-                  secondChild: _secondChild(index),
-                  firstCurve:
-                      const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
-                  secondCurve:
-                      const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
-                  sizeCurve: Curves.fastOutSlowIn,
-                  crossFadeState: _isCurrent(index)
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                  duration: kThemeAnimationDuration,
+        if (usePositionWidget &&
+            widget.steps[index].stepperContentWidgetBuilder(index) != null)
+          PositionedDirectional(
+            start: widget.lineStartMargin ?? 24.0,
+            top: widget.isTitleOnlyStepper ? 30.0 : 0,
+            bottom: 0.0,
+            child: SizedBox(
+              width: 24.0,
+              child: Center(
+                child: SizedBox(
+                  width: _isLast(index) ? 0.0 : 1.0,
+                  child: Container(
+                    color: Colors.grey.shade400,
+                  ),
                 ),
+              ),
+            ),
+          ),
+        widget.alwaysShowContent
+            ? _secondChild(index)
+            : AnimatedCrossFade(
+                firstChild: Container(height: 0.0),
+                secondChild: _secondChild(index),
+                firstCurve:
+                    const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
+                secondCurve:
+                    const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
+                sizeCurve: Curves.fastOutSlowIn,
+                crossFadeState: _isCurrent(index)
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: kThemeAnimationDuration,
+              ),
       ],
     );
   }
@@ -1075,30 +1067,43 @@ class _DynamicStepperState extends State<DynamicStepper>
       key: ObjectKey(_steps[i]),
       index: i,
       child: Container(
+        margin: EdgeInsets.only(left: 15),
         color: widget.backgroundColor ?? Colors.white60,
         child: Stack(
           children: <Widget>[
-            // if (_steps[i].title != null)
-            //   InkWell(
-            //     onTap: _steps[i].state != DynamicStepState.disabled
-            //         ? () {
-            //             // In the vertical case we need to scroll to the newly tapped
-            //             // step.
-            //             Scrollable.ensureVisible(
-            //               _keys[i].currentContext!,
-            //               curve: Curves.fastOutSlowIn,
-            //               duration: kThemeAnimationDuration,
-            //             );
-            //
-            //             widget.onStepTapped?.call(i);
-            //           }
-            //         : null,
-            //     canRequestFocus: _steps[i].state != DynamicStepState.disabled,
-            //     child: _buildVerticalHeader(i),
-            //   )
-            // else
-            _buildVerticalBody(i),
-            _buildVerticalHeader(i),
+            Positioned(
+                top: _isFirst(i) ? 0 : -25,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: _buildVerticalBody(i, usePositionWidget: false)),
+            Column(
+              children: <Widget>[
+                SizedBox(
+                  height: _isFirst(i) ? 40 : 20,
+                ),
+                CircleAvatar(
+                  backgroundColor: widget.stepperIndexColor,
+                  radius: 16,
+                  child: Center(
+                    child: Text(
+                      '${i + 1}',
+                      style: TextStyle(
+                          fontSize: widget.stepperFontSize ?? 20,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: !_isFirst(i) ? 15 : 15,
+                ),
+                Container(
+                  width: _isLast(i) ? 0 : 1,
+                  height: _isFirst(i) ? 150 : 155,
+                  color: Colors.grey,
+                ),
+              ],
+            ),
           ],
         ),
       ),

@@ -27,7 +27,6 @@ class DynamicStepperWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicStepper(
-      stepCircleColor: Colors.green,
       kStepSize: 33,
       dragLastWidget: false,
       enableDrag: true,
