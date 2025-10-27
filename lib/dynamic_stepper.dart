@@ -837,7 +837,8 @@ class _DynamicStepperState extends State<DynamicStepper>
                       '${index + 1}',
                       style: TextStyle(
                           fontSize: widget.stepperFontSize ?? 20,
-                          color: Colors.white),
+                          color: Colors.white,
+                          height: 1),
                     ),
                   ),
                 ),
