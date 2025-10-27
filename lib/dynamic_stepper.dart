@@ -827,7 +827,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                   _buildLine(!_isFirst(index)),
                 ],
                 SizedBox(
-                  height: _isFirst(index) ? 30 : 10,
+                  height: _isFirst(index) ? 20 : 10,
                 ),
                 CircleAvatar(
                   backgroundColor: widget.stepperIndexColor,
@@ -843,12 +843,6 @@ class _DynamicStepperState extends State<DynamicStepper>
                 ),
               ],
 
-              if (widget.isTitleOnlyStepper) ...[
-                widget.steps[index].stepperIcon ?? _buildHeaderText(index)
-              ],
-              if (!widget.isTitleOnlyStepper) ...[
-                //_buildLine(!_isLast(index)),
-              ],
               if (widget.isTitleOnlyStepper) ...[
                 widget.steps[index].stepperIcon ?? _buildHeaderText(index)
               ],
@@ -876,7 +870,7 @@ class _DynamicStepperState extends State<DynamicStepper>
             top: widget.isTitleOnlyStepper
                 ? 30.0
                 : _isFirst(index)
-                    ? 75
+                    ? 85
                     : 75,
             bottom: 0.0,
             child: SizedBox(
