@@ -789,23 +789,55 @@ class _DynamicStepperState extends State<DynamicStepper>
         children: <Widget>[
           Column(
             children: <Widget>[
-              // Line parts are always added in order for the ink splash to
-              // flood the tips of the connector lines.
               if (!widget.isTitleOnlyStepper) ...[
-                if (widget.drawLastLine) ...[
-                  // _buildLine(!_isFirst(index)),
-                ],
-                _buildIcon(index),
+                SizedBox(
+                  height: _isFirst(index) ? 40 : 20,
+                ),
+                CircleAvatar(
+                  backgroundColor: widget.stepperIndexColor,
+                  radius: widget.stepRadius ?? 32,
+                  child: Center(
+                    child: Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                          fontSize: widget.stepperFontSize ?? 20,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: !_isFirst(index) ? 15 : 15,
+                ),
+                Container(
+                  width: _isLast(index) ? 0 : 1,
+                  height: _isFirst(index) ? 150 : 155,
+                  color: Color(0XFFCCCCCC),
+                ),
               ],
-
               if (widget.isTitleOnlyStepper) ...[
                 widget.steps[index].stepperIcon ?? _buildHeaderText(index)
               ],
-              if (!widget.isTitleOnlyStepper) ...[
-                //_buildLine(!_isLast(index)),
-              ],
             ],
           ),
+          // Column(
+          //   children: <Widget>[
+          //     // Line parts are always added in order for the ink splash to
+          //     // flood the tips of the connector lines.
+          //     if (!widget.isTitleOnlyStepper) ...[
+          //       if (widget.drawLastLine) ...[
+          //         // _buildLine(!_isFirst(index)),
+          //       ],
+          //       _buildIcon(index),
+          //     ],
+          //
+          //     if (widget.isTitleOnlyStepper) ...[
+          //       widget.steps[index].stepperIcon ?? _buildHeaderText(index)
+          //     ],
+          //     if (!widget.isTitleOnlyStepper) ...[
+          //       //_buildLine(!_isLast(index)),
+          //     ],
+          //   ],
+          // ),
           if (!widget.isTitleOnlyStepper) ...[
             Expanded(
               child: Container(
@@ -1059,7 +1091,6 @@ class _DynamicStepperState extends State<DynamicStepper>
       key: ObjectKey(_steps[i]),
       index: i,
       child: Container(
-        margin: EdgeInsets.only(left: 15),
         color: widget.backgroundColor ?? Colors.white60,
         child: Stack(
           children: <Widget>[
@@ -1069,33 +1100,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                 right: 0,
                 bottom: 0,
                 child: _buildVerticalBody(i, usePositionWidget: false)),
-            Column(
-              children: <Widget>[
-                SizedBox(
-                  height: _isFirst(i) ? 40 : 20,
-                ),
-                CircleAvatar(
-                  backgroundColor: widget.stepperIndexColor,
-                  radius: widget.stepRadius ?? 32,
-                  child: Center(
-                    child: Text(
-                      '${i + 1}',
-                      style: TextStyle(
-                          fontSize: widget.stepperFontSize ?? 20,
-                          color: Colors.white),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: !_isFirst(i) ? 15 : 15,
-                ),
-                Container(
-                  width: _isLast(i) ? 0 : 1,
-                  height: _isFirst(i) ? 150 : 155,
-                  color: Color(0XFFCCCCCC),
-                ),
-              ],
-            ),
+            _buildVerticalHeader(i),
           ],
         ),
       ),
