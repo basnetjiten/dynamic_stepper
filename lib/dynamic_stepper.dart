@@ -796,17 +796,6 @@ class _DynamicStepperState extends State<DynamicStepper>
                   // _buildLine(!_isFirst(index)),
                 ],
                 _buildIcon(index),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  width: 1,
-                  height: 100,
-                  color: Colors.grey,
-                ),
-                SizedBox(
-                  height: 5,
-                ),
               ],
 
               if (widget.isTitleOnlyStepper) ...[
@@ -1103,7 +1092,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                 Container(
                   width: _isLast(i) ? 0 : 1,
                   height: _isFirst(i) ? 150 : 155,
-                  color: Colors.grey,
+                  color: Color(0XFFCCCCCC),
                 ),
               ],
             ),
