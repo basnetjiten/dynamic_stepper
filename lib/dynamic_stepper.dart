@@ -206,48 +206,52 @@ class DynamicStepper extends StatefulWidget {
   /// new one.
   ///
   /// The [steps], [type], and [currentStep] arguments must not be null.
-  const DynamicStepper({
-    super.key,
-    required this.steps,
-    this.kStepSize,
-    this.physics,
-    this.type = DynamicStepperType.vertical,
-    this.currentStep = 0,
-    this.onStepTapped,
-    this.onStepContinue,
-    this.onStepCancel,
-    this.controlsBuilder,
-    this.elevation,
-    this.contentMargin,
-    this.alwaysShowContent = true,
-    this.isTitleOnlyStepper = false,
-    this.drawLastLine = true,
-    this.enableSwipeAction = false,
-    this.enableDrag = true,
-    this.actionIcon,
-    this.onStepDelete,
-    this.buildDefaultDragHandles = false,
-    this.enableRefresh = false,
-    this.onRefresh,
-    this.dragLastWidget = false,
-    this.onStepDragged,
-    this.lastWidget,
-    this.slidableCardHeight,
-    this.firstWidget,
-    this.footerActionWidget,
-    this.toggleWidget,
-    this.backgroundColor,
-    this.horizontalMargin,
-    this.lineStartMargin,
-    this.autoScrollerVelocityScalar,
-    this.scaleX,
-    this.scaleY,
-  }) : assert(0 <= currentStep && currentStep < steps.length);
+  const DynamicStepper(
+      {super.key,
+      required this.steps,
+      this.kStepSize,
+      this.physics,
+      this.type = DynamicStepperType.vertical,
+      this.currentStep = 0,
+      this.onStepTapped,
+      this.onStepContinue,
+      this.onStepCancel,
+      this.controlsBuilder,
+      this.elevation,
+      this.contentMargin,
+      this.alwaysShowContent = true,
+      this.isTitleOnlyStepper = false,
+      this.drawLastLine = true,
+      this.enableSwipeAction = false,
+      this.enableDrag = true,
+      this.actionIcon,
+      this.onStepDelete,
+      this.buildDefaultDragHandles = false,
+      this.enableRefresh = false,
+      this.onRefresh,
+      this.dragLastWidget = false,
+      this.onStepDragged,
+      this.lastWidget,
+      this.slidableCardHeight,
+      this.firstWidget,
+      this.footerActionWidget,
+      this.toggleWidget,
+      this.backgroundColor,
+      this.horizontalMargin,
+      this.lineStartMargin,
+      this.autoScrollerVelocityScalar,
+      this.scaleX,
+      this.scaleY,
+      this.stepFontSize,
+      this.verticalLineBottomPadding})
+      : assert(0 <= currentStep && currentStep < steps.length);
 
   final double? kStepSize;
 
   //Enable or disable item to be draggable in a ReorderableListView
   final bool buildDefaultDragHandles;
+
+  final double? stepFontSize;
 
   final Widget? lastWidget;
 
@@ -275,6 +279,8 @@ class DynamicStepper extends StatefulWidget {
 
   /// Shows only title widget in the stepper
   final bool isTitleOnlyStepper;
+
+  final double? verticalLineBottomPadding;
 
   final bool drawLastLine;
 
@@ -478,8 +484,12 @@ class _DynamicStepperState extends State<DynamicStepper>
           textAlign: TextAlign.center,
           '${index + 1}',
           style: isDarkActive
-              ? _kStepStyle.copyWith(color: Colors.black87, height: 1)
-              : _kStepStyle.copyWith(height: 1),
+              ? _kStepStyle.copyWith(
+                  color: Colors.black87,
+                  height: 1,
+                  fontSize: widget.stepFontSize ?? 18)
+              : _kStepStyle.copyWith(
+                  height: 1, fontSize: widget.stepFontSize ?? 18),
         );
       case DynamicStepState.editing:
         return Icon(
@@ -775,7 +785,7 @@ class _DynamicStepperState extends State<DynamicStepper>
   Widget _buildVerticalHeader(int index) {
     return Container(
       margin: widget.horizontalMargin ??
-          const EdgeInsets.symmetric(horizontal: 24.0),
+          const EdgeInsets.symmetric(horizontal: 15.0),
       child: Row(
         children: <Widget>[
           Column(
@@ -784,7 +794,7 @@ class _DynamicStepperState extends State<DynamicStepper>
               // flood the tips of the connector lines.
               if (!widget.isTitleOnlyStepper) ...[
                 if (widget.drawLastLine) ...[
-                  _buildLine(!_isFirst(index)),
+                  // _buildLine(!_isFirst(index)),
                 ],
                 _buildIcon(index),
               ],
@@ -793,7 +803,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                 widget.steps[index].stepperIcon ?? _buildHeaderText(index)
               ],
               if (!widget.isTitleOnlyStepper) ...[
-                _buildLine(!_isLast(index)),
+                // _buildLine(!_isLast(index)),
               ],
             ],
           ),
@@ -817,7 +827,7 @@ class _DynamicStepperState extends State<DynamicStepper>
           PositionedDirectional(
             start: widget.lineStartMargin ?? 24.0,
             top: widget.isTitleOnlyStepper ? 30.0 : 50,
-            bottom: 0.0,
+            bottom: widget.verticalLineBottomPadding ?? 0,
             child: SizedBox(
               width: 24.0,
               child: Center(

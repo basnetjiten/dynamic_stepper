@@ -27,6 +27,7 @@ class DynamicStepperWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicStepper(
+      kStepSize: 42,
       dragLastWidget: false,
       enableDrag: true,
       physics: const AlwaysScrollableScrollPhysics(),

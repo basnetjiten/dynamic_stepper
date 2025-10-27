@@ -88,8 +88,9 @@ class _WeekViewStepperWidgetState extends State<WeekViewStepperWidget> {
                       width: 100,
                       color: AppColors.textDarkGrey,
                       child: Text(_days[index])),
-              state: index==9 ? DynamicStepState.none:DynamicStepState.indexed,
-              isActive: index==9? false: true,
+              state:
+                  index == 9 ? DynamicStepState.none : DynamicStepState.indexed,
+              isActive: index == 9 ? false : true,
               stepperContentWidgetBuilder: (int index) {
                 if (_days[index] == 'Wednesday') {
                   return null;
