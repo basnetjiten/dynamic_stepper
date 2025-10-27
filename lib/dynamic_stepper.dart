@@ -471,7 +471,7 @@ class _DynamicStepperState extends State<DynamicStepper>
   Widget _buildLine(bool visible) {
     return Container(
       width: visible ? 1.0 : 0.0,
-      height: 16.0,
+      height: 18.0,
       color: const Color(0xFFCCCCCC),
     );
   }
@@ -783,15 +783,51 @@ class _DynamicStepperState extends State<DynamicStepper>
 
   Widget _buildVerticalHeader(int index) {
     return Container(
-      margin: widget.horizontalMargin ??
-          const EdgeInsets.symmetric(horizontal: 20.0),
+      margin: widget.horizontalMargin ?? const EdgeInsets.only(left: 18),
       child: Row(
         children: <Widget>[
+          // Column(
+          //   children: <Widget>[
+          //     if (!widget.isTitleOnlyStepper) ...[
+          //       SizedBox(
+          //         height: _isFirst(index) ? 40 : 20,
+          //       ),
+          //       CircleAvatar(
+          //         backgroundColor: widget.stepperIndexColor,
+          //         radius: widget.stepRadius ?? 32,
+          //         child: Center(
+          //           child: Text(
+          //             '${index + 1}',
+          //             style: TextStyle(
+          //                 fontSize: widget.stepperFontSize ?? 20,
+          //                 color: Colors.white),
+          //           ),
+          //         ),
+          //       ),
+          //       SizedBox(
+          //         height: !_isFirst(index) ? 15 : 15,
+          //       ),
+          //       Container(
+          //         width: _isLast(index) ? 0 : 5,
+          //         //  height: _isFirst(index) ? 150 : 155,
+          //         color: Colors.red,
+          //       ),
+          //     ],
+          //     if (widget.isTitleOnlyStepper) ...[
+          //       widget.steps[index].stepperIcon ?? _buildHeaderText(index)
+          //     ],
+          //   ],
+          // ),
           Column(
             children: <Widget>[
+              // Line parts are always added in order for the ink splash to
+              // flood the tips of the connector lines.
               if (!widget.isTitleOnlyStepper) ...[
+                if (widget.drawLastLine) ...[
+                  _buildLine(!_isFirst(index)),
+                ],
                 SizedBox(
-                  height: _isFirst(index) ? 40 : 20,
+                  height: _isFirst(index) ? 30 : 10,
                 ),
                 CircleAvatar(
                   backgroundColor: widget.stepperIndexColor,
@@ -805,39 +841,19 @@ class _DynamicStepperState extends State<DynamicStepper>
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: !_isFirst(index) ? 15 : 15,
-                ),
-                Container(
-                  width: _isLast(index) ? 0 : 1,
-                  height: _isFirst(index) ? 150 : 155,
-                  color: Color(0XFFCCCCCC),
-                ),
+              ],
+
+              if (widget.isTitleOnlyStepper) ...[
+                widget.steps[index].stepperIcon ?? _buildHeaderText(index)
+              ],
+              if (!widget.isTitleOnlyStepper) ...[
+                //_buildLine(!_isLast(index)),
               ],
               if (widget.isTitleOnlyStepper) ...[
                 widget.steps[index].stepperIcon ?? _buildHeaderText(index)
               ],
             ],
           ),
-          // Column(
-          //   children: <Widget>[
-          //     // Line parts are always added in order for the ink splash to
-          //     // flood the tips of the connector lines.
-          //     if (!widget.isTitleOnlyStepper) ...[
-          //       if (widget.drawLastLine) ...[
-          //         // _buildLine(!_isFirst(index)),
-          //       ],
-          //       _buildIcon(index),
-          //     ],
-          //
-          //     if (widget.isTitleOnlyStepper) ...[
-          //       widget.steps[index].stepperIcon ?? _buildHeaderText(index)
-          //     ],
-          //     if (!widget.isTitleOnlyStepper) ...[
-          //       //_buildLine(!_isLast(index)),
-          //     ],
-          //   ],
-          // ),
           if (!widget.isTitleOnlyStepper) ...[
             Expanded(
               child: Container(
@@ -851,14 +867,17 @@ class _DynamicStepperState extends State<DynamicStepper>
     );
   }
 
-  Widget _buildVerticalBody(int index, {bool usePositionWidget = true}) {
+  Widget _buildVerticalBody(int index) {
     return Stack(
       children: <Widget>[
-        if (usePositionWidget &&
-            widget.steps[index].stepperContentWidgetBuilder(index) != null)
+        if (widget.steps[index].stepperContentWidgetBuilder(index) != null)
           PositionedDirectional(
             start: widget.lineStartMargin ?? 24.0,
-            top: widget.isTitleOnlyStepper ? 30.0 : 0,
+            top: widget.isTitleOnlyStepper
+                ? 30.0
+                : _isFirst(index)
+                    ? 75
+                    : 75,
             bottom: 0.0,
             child: SizedBox(
               width: 24.0,
@@ -866,7 +885,7 @@ class _DynamicStepperState extends State<DynamicStepper>
                 child: SizedBox(
                   width: _isLast(index) ? 0.0 : 1.0,
                   child: Container(
-                    color: Colors.grey.shade400,
+                    color: const Color(0xFFCCCCCC),
                   ),
                 ),
               ),
@@ -1094,12 +1113,7 @@ class _DynamicStepperState extends State<DynamicStepper>
         color: widget.backgroundColor ?? Colors.white60,
         child: Stack(
           children: <Widget>[
-            Positioned(
-                top: _isFirst(i) ? 0 : -25,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: _buildVerticalBody(i, usePositionWidget: false)),
+            _buildVerticalBody(i),
             _buildVerticalHeader(i),
           ],
         ),
