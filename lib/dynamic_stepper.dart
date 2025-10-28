@@ -244,7 +244,9 @@ class DynamicStepper extends StatefulWidget {
       this.scaleY,
       this.stepperIndexColor,
       this.stepperFontSize,
-      this.stepRadius})
+      this.stepRadius,
+      this.topLinePaddingForFirstIndex,
+      this.topLinePaddingForOtherIndex})
       : assert(0 <= currentStep && currentStep < steps.length);
 
   final double? kStepSize;
@@ -253,6 +255,10 @@ class DynamicStepper extends StatefulWidget {
   final bool buildDefaultDragHandles;
 
   final Widget? lastWidget;
+
+  final double? topLinePaddingForFirstIndex;
+
+  final double? topLinePaddingForOtherIndex;
 
   final bool dragLastWidget;
 
@@ -871,8 +877,8 @@ class _DynamicStepperState extends State<DynamicStepper>
             top: widget.isTitleOnlyStepper
                 ? 30.0
                 : _isFirst(index)
-                    ? 85
-                    : 75,
+                    ? widget.topLinePaddingForFirstIndex ?? 85
+                    : widget.topLinePaddingForOtherIndex ?? 75,
             bottom: 0.0,
             child: SizedBox(
               width: 24.0,
