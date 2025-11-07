@@ -850,7 +850,15 @@ class _DynamicStepperState extends State<DynamicStepper>
                     ),
                   )
                 else
-                  const SizedBox.shrink()
+                  CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    radius: widget.stepRadius ?? 32,
+                    child: const Center(
+                      child: Text(
+                        '',
+                      ),
+                    ),
+                  )
               ],
 
               if (widget.isTitleOnlyStepper) ...[
