@@ -835,19 +835,22 @@ class _DynamicStepperState extends State<DynamicStepper>
                 SizedBox(
                   height: _isFirst(index) ? 20 : 10,
                 ),
-                CircleAvatar(
-                  backgroundColor: widget.stepperIndexColor,
-                  radius: widget.stepRadius ?? 32,
-                  child: Center(
-                    child: Text(
-                      '${index + 1}',
-                      style: TextStyle(
-                          fontSize: widget.stepperFontSize ?? 20,
-                          color: Colors.white,
-                          height: 1),
+                if (_steps[index].state == DynamicStepState.indexed)
+                  CircleAvatar(
+                    backgroundColor: widget.stepperIndexColor,
+                    radius: widget.stepRadius ?? 32,
+                    child: Center(
+                      child: Text(
+                        '${index + 1}',
+                        style: TextStyle(
+                            fontSize: widget.stepperFontSize ?? 20,
+                            color: Colors.white,
+                            height: 1),
+                      ),
                     ),
-                  ),
-                ),
+                  )
+                else
+                  const SizedBox.shrink()
               ],
 
               if (widget.isTitleOnlyStepper) ...[
@@ -1233,7 +1236,7 @@ class _DynamicStepperState extends State<DynamicStepper>
           children: [
             Expanded(child: _buildVertical()),
             // Non-draggable footer outside the reorderable area
-            widget.footerActionWidget ?? SizedBox.shrink()
+            widget.footerActionWidget ?? const SizedBox.shrink()
           ],
         );
       case DynamicStepperType.horizontal:
