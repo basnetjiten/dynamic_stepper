@@ -829,11 +829,11 @@ class _DynamicStepperState extends State<DynamicStepper>
               // Line parts are always added in order for the ink splash to
               // flood the tips of the connector lines.
               if (!widget.isTitleOnlyStepper) ...[
-                if (widget.drawLastLine) ...[
-                  _buildLine(!_isFirst(index)),
-                ],
-                SizedBox(
-                  height: _isFirst(index) ? 20 : 10,
+                // if (widget.drawLastLine) ...[
+                //   _buildLine(!_isFirst(index)),
+                // ],
+                const SizedBox(
+                  height: 20,
                 ),
                 if (_steps[index].state == DynamicStepState.indexed)
                   CircleAvatar(
