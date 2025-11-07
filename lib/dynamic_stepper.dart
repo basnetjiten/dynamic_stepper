@@ -829,8 +829,11 @@ class _DynamicStepperState extends State<DynamicStepper>
               // Line parts are always added in order for the ink splash to
               // flood the tips of the connector lines.
               if (!widget.isTitleOnlyStepper) ...[
-                const SizedBox(
-                  height: 20,
+                if (widget.drawLastLine) ...[
+                  _buildLine(!_isFirst(index)),
+                ],
+                SizedBox(
+                  height: _isFirst(index) ? 20 : 10,
                 ),
                 if (_steps[index].state == DynamicStepState.indexed)
                   CircleAvatar(
@@ -877,7 +880,7 @@ class _DynamicStepperState extends State<DynamicStepper>
             top: widget.isTitleOnlyStepper
                 ? 30.0
                 : _isFirst(index)
-                    ? widget.topLinePaddingForFirstIndex ?? 75
+                    ? widget.topLinePaddingForFirstIndex ?? 85
                     : widget.topLinePaddingForOtherIndex ?? 75,
             bottom: 0.0,
             child: SizedBox(
