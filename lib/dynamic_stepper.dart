@@ -829,9 +829,6 @@ class _DynamicStepperState extends State<DynamicStepper>
               // Line parts are always added in order for the ink splash to
               // flood the tips of the connector lines.
               if (!widget.isTitleOnlyStepper) ...[
-                // if (widget.drawLastLine) ...[
-                //   _buildLine(!_isFirst(index)),
-                // ],
                 const SizedBox(
                   height: 20,
                 ),
@@ -880,7 +877,7 @@ class _DynamicStepperState extends State<DynamicStepper>
             top: widget.isTitleOnlyStepper
                 ? 30.0
                 : _isFirst(index)
-                    ? widget.topLinePaddingForFirstIndex ?? 85
+                    ? widget.topLinePaddingForFirstIndex ?? 75
                     : widget.topLinePaddingForOtherIndex ?? 75,
             bottom: 0.0,
             child: SizedBox(
